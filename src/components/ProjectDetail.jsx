@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "../supabase";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -9,9 +9,13 @@ import {
   Zap,
   Server,
   ShieldAlert,
+  ExternalLink,
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
+const fallbackImage =
+  "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -24,12 +28,13 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    AOS.init({ duration: 1000, once: true });
+    AOS.init({ duration: 900, once: true });
     fetchProjectDetails();
   }, [id]);
 
   const fetchProjectDetails = async () => {
     setLoading(true);
+
     try {
       const { data, error } = await supabase
         .from("projects")
@@ -41,10 +46,35 @@ const ProjectDetails = () => {
       setProject(data);
     } catch (err) {
       console.error("Error fetching project:", err);
+      setProject(null);
     } finally {
       setLoading(false);
     }
   };
+
+  const techStack = useMemo(() => {
+    if (!project) return ["Azure", "SIEM", "KQL", "Security Lab"];
+
+    const rawStack =
+      project.TechStack ||
+      project.tech_stack ||
+      project.Stack ||
+      project.stack ||
+      "";
+
+    const parsedStack = rawStack
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    return parsedStack.length
+      ? parsedStack
+      : ["Azure", "SIEM", "KQL", "Security Lab"];
+  }, [project]);
+
+  const projectImage = project?.Img || project?.image || fallbackImage;
+  const projectLink = project?.Link || project?.link || "";
+  const hasProjectLink = Boolean(projectLink);
 
   if (loading) {
     return (
@@ -60,6 +90,7 @@ const ProjectDetails = () => {
         <h1 className="text-2xl font-black italic tracking-widest text-red-500 uppercase mb-4">
           Access Denied: Lab Not Found
         </h1>
+
         <Link
           to="/"
           className="text-emerald-400 hover:text-white transition-all underline underline-offset-8"
@@ -72,7 +103,8 @@ const ProjectDetails = () => {
 
   return (
     <div className="bg-[#030712] text-white min-h-screen font-sans selection:bg-emerald-500/30">
-      <nav className="fixed top-0 w-full z-50 px-[5%] py-6 backdrop-blur-md bg-[#030712]/50 border-b border-white/5">
+      {/* NAV */}
+      <nav className="fixed top-0 w-full z-50 px-[5%] py-6 backdrop-blur-md bg-[#030712]/70 border-b border-white/5">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link
             to="/"
@@ -80,29 +112,29 @@ const ProjectDetails = () => {
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="text-[10px] font-black uppercase tracking-[0.3em]">
-              Back to Terminal
+              Back to Portfolio
             </span>
           </Link>
 
-          <div className="hidden md:block text-emerald-500/40 text-[9px] font-mono tracking-widest uppercase">
+          <div className="hidden md:block text-emerald-500/50 text-[9px] font-mono tracking-widest uppercase">
             System_Status: Secure_Connection_Established
           </div>
         </div>
       </nav>
 
-      {/* HERO FIXED */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-visible pt-28 pb-24">
+      {/* HERO */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-24">
         <motion.div style={{ scale, opacity }} className="absolute inset-0">
           <img
-            src={project.Img}
-            alt={project.Title}
+            src={projectImage}
+            alt={project.Title || "Cybersecurity Project"}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.currentTarget.src =
-                "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070";
+              e.currentTarget.src = fallbackImage;
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/75 via-[#030712]/88 to-[#030712]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/72 via-[#030712]/90 to-[#030712]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(16,185,129,0.12),transparent_35%)]" />
         </motion.div>
 
         <div
@@ -121,40 +153,61 @@ const ProjectDetails = () => {
             {project.Description}
           </p>
 
-          <div className="relative z-20 flex flex-wrap justify-center gap-6 mt-10 pb-8">
-            <a
-              href={project.Link || "#"}
-              target="_blank"
-              rel="noreferrer"
-              className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-white text-black font-black hover:bg-emerald-400 hover:scale-105 transition-all active:scale-95 shadow-2xl uppercase tracking-[0.2em] text-[11px]"
+          <div className="relative z-20 flex flex-wrap justify-center gap-4 mt-10 pb-8">
+            {hasProjectLink ? (
+              <a
+                href={projectLink}
+                target="_blank"
+                rel="noreferrer"
+                className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-white text-black font-black hover:bg-emerald-400 hover:scale-105 transition-all active:scale-95 shadow-2xl uppercase tracking-[0.2em] text-[11px]"
+              >
+                <Github className="w-5 h-5" />
+                View Repository
+              </a>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-white/10 text-gray-500 font-black cursor-not-allowed uppercase tracking-[0.2em] text-[11px]"
+              >
+                <Github className="w-5 h-5" />
+                Repository Coming Soon
+              </button>
+            )}
+
+            <Link
+              to="/"
+              className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black hover:bg-emerald-500 hover:text-black hover:scale-105 transition-all active:scale-95 uppercase tracking-[0.2em] text-[11px]"
             >
-              <Github className="w-5 h-5" /> View Repository
-            </a>
+              <ExternalLink className="w-5 h-5" />
+              More Labs
+            </Link>
           </div>
         </div>
       </section>
 
+      {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-[5%] pt-16 pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          {/* MAIN */}
           <div className="lg:col-span-2 space-y-24">
             <section data-aos="fade-up">
               <div className="flex items-center gap-4 mb-10">
                 <div className="h-[1px] flex-grow bg-white/10" />
                 <h2 className="text-2xl font-bold italic uppercase tracking-tighter flex items-center gap-3">
-                  <ShieldAlert className="text-emerald-400 w-6 h-6" /> Lab
-                  Documentation
+                  <ShieldAlert className="text-emerald-400 w-6 h-6" />
+                  Lab Documentation
                 </h2>
                 <div className="h-[1px] flex-grow bg-white/10" />
               </div>
 
               <div className="group relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-emerald-500/20 shadow-2xl shadow-emerald-500/5">
                 <img
-                  src={project.Img}
+                  src={projectImage}
                   alt="Lab Preview"
                   className="w-full h-auto rounded-[1.8rem] transition-transform duration-700 group-hover:scale-[1.01]"
                   onError={(e) => {
-                    e.currentTarget.src =
-                      "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070";
+                    e.currentTarget.src = fallbackImage;
                   }}
                 />
               </div>
@@ -162,16 +215,18 @@ const ProjectDetails = () => {
 
             <section
               data-aos="fade-up"
-              className="bg-white/[0.01] border border-white/5 rounded-[2.5rem] p-10 md:p-16"
+              className="bg-white/[0.01] border border-white/5 rounded-[2.5rem] p-8 md:p-16"
             >
               <h3 className="text-3xl font-black italic uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <Server className="text-blue-500" /> Infrastructure Setup
+                <Server className="text-blue-500" />
+                Infrastructure Setup
               </h3>
 
               <p className="text-gray-400 leading-relaxed text-lg font-light mb-10">
                 Detailed analysis of the lab deployment, including cloud
-                networking, security protocols, and automation scripts used to
-                build this environment.
+                networking, identity security, monitoring, detection logic, and
+                automation workflows used to build this cybersecurity
+                environment.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono">
@@ -180,29 +235,30 @@ const ProjectDetails = () => {
                     Core Tools
                   </h4>
                   <p className="text-xs text-gray-400 tracking-tight">
-                    Sentinel, KQL, Azure LogicApps, Sysmon
+                    Microsoft Sentinel, KQL, Azure Logic Apps, Sysmon
                   </p>
                 </div>
 
                 <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
                   <h4 className="text-emerald-500 font-bold uppercase text-[10px] tracking-widest mb-2">
-                    Deployment
+                    Engineering Focus
                   </h4>
                   <p className="text-xs text-gray-400 tracking-tight">
-                    Automated ARM & Bicep Templates
+                    Threat Detection, Cloud Security, SIEM, Identity Protection
                   </p>
                 </div>
               </div>
             </section>
           </div>
 
+          {/* SIDEBAR */}
           <aside className="space-y-8">
             <div
-              className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 backdrop-blur-sm sticky top-32"
+              className="p-8 md:p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 backdrop-blur-sm sticky top-32"
               data-aos="fade-left"
             >
               <h3 className="text-lg font-bold mb-10 flex items-center gap-3 italic uppercase tracking-[0.2em]">
-                <Zap className="text-yellow-400 w-5 h-5 fill-yellow-400/20" />{" "}
+                <Zap className="text-yellow-400 w-5 h-5 fill-yellow-400/20" />
                 Lab Metadata
               </h3>
 
@@ -221,17 +277,27 @@ const ProjectDetails = () => {
                     Status
                   </p>
                   <div className="flex items-center gap-2 text-gray-300 font-medium">
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" />{" "}
-                    Production Verified
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    Lab Verified
                   </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-black mb-2">
+                    Project Type
+                  </p>
+                  <p className="text-gray-300 font-medium">
+                    Hands-on Cybersecurity Lab
+                  </p>
                 </div>
 
                 <div className="pt-8 border-t border-white/5">
                   <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-black mb-4">
                     Tech Stack
                   </p>
+
                   <div className="flex flex-wrap gap-2">
-                    {["SIEM", "SOAR", "AZURE", "KQL"].map((t) => (
+                    {techStack.map((t) => (
                       <span
                         key={t}
                         className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] font-mono text-gray-400 uppercase tracking-tighter"
@@ -241,12 +307,25 @@ const ProjectDetails = () => {
                     ))}
                   </div>
                 </div>
+
+                {hasProjectLink && (
+                  <a
+                    href={projectLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-emerald-500 text-black font-black hover:bg-white hover:scale-[1.02] transition-all uppercase tracking-[0.18em] text-[10px]"
+                  >
+                    <Github className="w-4 h-4" />
+                    Open GitHub Repo
+                  </a>
+                )}
               </div>
             </div>
           </aside>
         </div>
       </div>
 
+      {/* FOOTER CTA */}
       <section className="py-24 text-center border-t border-white/5 bg-gradient-to-b from-transparent to-emerald-500/[0.01]">
         <h2 className="text-2xl font-black italic uppercase tracking-tighter opacity-20 mb-10">
           End of Laboratory Transmission
