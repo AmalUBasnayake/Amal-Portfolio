@@ -1,14 +1,21 @@
 import React, { useEffect, useState, memo } from "react";
-import { Terminal, Zap, Linkedin, ShieldAlert, ArrowRight } from "lucide-react";
+import {
+  Terminal,
+  Zap,
+  Linkedin,
+  Github,
+  ShieldAlert,
+  ArrowRight,
+} from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 const WORDS = [
-  "Cybersecurity Engineer Path",
-  "Azure Security Specialist",
-  "IT & Systems Specialist",
-  "SOC & SIEM Practitioner",
+  "Cybersecurity Engineer",
   "Cloud Security Engineer",
+  "Azure Security Engineer Path",
+  "SIEM & Threat Detection Engineer",
+  "Zero Trust Security Practitioner",
 ];
 
 const Home = ({ labMode, setLabMode }) => {
@@ -53,8 +60,7 @@ const Home = ({ labMode, setLabMode }) => {
       id="Home"
       className="relative min-h-screen bg-[#030014] overflow-hidden flex flex-col justify-center pt-20"
     >
-      {/* softer glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.06),transparent_30%),radial-gradient(circle_at_80%_50%,rgba(59,130,246,0.05),transparent_30%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.08),transparent_30%),radial-gradient(circle_at_80%_50%,rgba(59,130,246,0.07),transparent_30%)] pointer-events-none" />
 
       <div
         className={`container mx-auto px-6 relative z-10 py-10 transition-opacity duration-1000 ${
@@ -75,7 +81,7 @@ const Home = ({ labMode, setLabMode }) => {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
                 <span className="text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">
-                  Securing Enterprise Infrastructure
+                  Cloud Security • SIEM • Threat Detection
                 </span>
               </div>
 
@@ -102,7 +108,6 @@ const Home = ({ labMode, setLabMode }) => {
               </button>
             </div>
 
-            {/* compact hero */}
             <div data-aos="fade-right" data-aos-delay="500">
               <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase italic leading-[0.9] tracking-tighter text-white">
                 Amal <br />
@@ -120,30 +125,30 @@ const Home = ({ labMode, setLabMode }) => {
               </span>
             </div>
 
-            {/* compact paragraph */}
             <p className="text-slate-400 text-base md:text-lg max-w-2xl leading-relaxed mx-auto lg:mx-0">
-              Currently working as an{" "}
+              Cybersecurity and cloud security professional with{" "}
               <span className="text-white font-bold">
-                IT & Systems Specialist at Musaeus College
+                5+ years of enterprise IT experience
               </span>
-              , managing and securing a{" "}
+              , currently securing a{" "}
               <span className="text-emerald-400 font-bold">
                 Microsoft 365 environment for 4,000+ users
-              </span>
-              .
-
+              </span>{" "}
+              at Musaeus College.
               <br />
               <br />
-
               Building{" "}
               <span className="text-emerald-400 font-black uppercase">
-                28+ real-world cybersecurity labs
+                30+ real-world cybersecurity labs
               </span>{" "}
-              across Azure Security, SIEM, SOAR, and cloud defense.
+              across Azure Security, Microsoft Sentinel, Splunk, SOAR
+              automation, Zero Trust identity, WAF, Key Vault, and threat
+              detection.
             </p>
 
             <p className="text-emerald-400 text-xs font-mono tracking-widest">
-              ✔ 5+ Years IT Experience • ✔ 4,000+ Users Managed • ✔ AZ-500 Active Track
+              ✔ 5+ Years IT Experience • ✔ 4,000+ Users Secured • ✔ AZ-500
+              Active Track
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-3 justify-center lg:justify-start">
@@ -151,7 +156,16 @@ const Home = ({ labMode, setLabMode }) => {
                 href="#Portofolio"
                 className="bg-emerald-500 text-black px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-white transition-all shadow-[0_0_20px_rgba(16,185,129,0.4)]"
               >
-                Explore Labs <Zap className="w-4 h-4 fill-current" />
+                View Security Projects <Zap className="w-4 h-4 fill-current" />
+              </a>
+
+              <a
+                href="https://github.com/AmalUBasnayake"
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white/5 text-white border border-white/10 px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-white/10 hover:border-emerald-500/30 transition-all"
+              >
+                GitHub <Github className="w-4 h-4" />
               </a>
 
               <a
@@ -160,7 +174,7 @@ const Home = ({ labMode, setLabMode }) => {
                 rel="noreferrer"
                 className="bg-white/5 text-white border border-white/10 px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-white/10 hover:border-emerald-500/30 transition-all"
               >
-                Connect <Linkedin className="w-4 h-4" />
+                LinkedIn <Linkedin className="w-4 h-4" />
               </a>
             </div>
           </div>
@@ -181,7 +195,7 @@ const Home = ({ labMode, setLabMode }) => {
 
               <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-5 py-2 rounded-full bg-[#0a0f1a]/90 border border-emerald-500/20 backdrop-blur-xl">
                 <p className="text-emerald-400 text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
-                  Cloud Security • SOC • Azure
+                  Azure Security • SIEM • Cloud Defense
                 </p>
               </div>
             </div>

@@ -7,6 +7,7 @@ import {
   X,
   Clock,
   FileCheck,
+  Download,
 } from "lucide-react";
 
 const Certifications = () => {
@@ -16,12 +17,13 @@ const Certifications = () => {
   const certificationsList = [
     {
       title: "Pearson BTEC HND in Cybersecurity",
-      org: "Pearson BTEC Level 5",
-      description: "Digital Forensics & ISMS pathway",
+      org: "Pearson BTEC Level 5 • Achievers International Campus",
+      description:
+        "Completed April 2026 • 240 Credits • Distinction in Digital Forensics & Information Security Management",
       category: "Academic",
-      status: "Awaiting Official Certificate",
-      statusType: "pending",
-      pdfUrl: null,
+      status: "Completed",
+      statusType: "verified",
+      pdfUrl: "/certificates/Amal_Basnayake_HND_Completion_Letter.pdf",
       image: "/certificates/btec-hnd.png",
     },
     {
@@ -161,7 +163,7 @@ const Certifications = () => {
             <p className="text-slate-500 text-xs uppercase tracking-widest">
               Verified Records
             </p>
-            <h3 className="text-3xl font-black text-emerald-400 mt-2">4</h3>
+            <h3 className="text-3xl font-black text-emerald-400 mt-2">5</h3>
           </div>
 
           <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-5">
@@ -171,6 +173,99 @@ const Certifications = () => {
             <h3 className="text-2xl font-black text-amber-400 mt-2">
               AZ-500
             </h3>
+          </div>
+        </div>
+
+        {/* HND COMPLETION HIGHLIGHT - ENGINEER LEVEL UI */}
+        <div className="mb-10 relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/[0.10] via-[#07111f] to-cyan-500/[0.06] p-6 md:p-8 shadow-[0_0_50px_rgba(16,185,129,0.10)]">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 blur-3xl rounded-full" />
+          <div className="absolute -bottom-16 -left-16 w-60 h-60 bg-cyan-500/10 blur-3xl rounded-full" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex gap-5">
+              <div className="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/15 border border-emerald-400/30">
+                <ShieldCheck className="text-emerald-400" size={32} />
+              </div>
+
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/25 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-4">
+                  <ShieldCheck size={13} />
+                  Verified Academic Credential
+                </div>
+
+                <h3 className="text-white text-2xl md:text-3xl font-black tracking-tight">
+                  Pearson BTEC HND in Cybersecurity
+                </h3>
+
+                <p className="text-slate-400 text-sm mt-2 max-w-2xl leading-relaxed">
+                  Official completion confirmation from Achievers International
+                  Campus. Completed with 240 credits, including Distinction
+                  grades in Digital Forensics and Information Security
+                  Management.
+                </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
+                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
+                      Status
+                    </p>
+                    <p className="text-emerald-400 font-black text-sm mt-1">
+                      Completed
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
+                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
+                      Credits
+                    </p>
+                    <p className="text-white font-black text-sm mt-1">240</p>
+                  </div>
+
+                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
+                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
+                      Grade
+                    </p>
+                    <p className="text-yellow-400 font-black text-sm mt-1">
+                      2 Distinctions
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
+                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
+                      Certificate
+                    </p>
+                    <p className="text-blue-400 font-black text-sm mt-1">
+                      Pending
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-slate-500 text-xs mt-4">
+                  Official certificate pending — completion letter available for
+                  verification.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[190px]">
+              <button
+                type="button"
+                onClick={() => setSelectedCert(certificationsList[0])}
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 text-black text-xs font-black uppercase tracking-widest hover:scale-105 transition shadow-[0_0_25px_rgba(16,185,129,0.25)]"
+              >
+                <ExternalLink size={15} />
+                View Letter
+              </button>
+
+              <a
+                href="/certificates/Amal_Basnayake_HND_Completion_Letter.pdf"
+                download
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-slate-300 text-xs font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition"
+              >
+                <Download size={15} />
+                Download
+              </a>
+            </div>
           </div>
         </div>
 
@@ -372,7 +467,7 @@ const Certifications = () => {
                   <>
                     <div className="w-full h-full pt-[76px] bg-black">
                       <iframe
-                        src={`${selectedCert.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH&zoom=150`}
+                        src={`${selectedCert.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH&zoom=130`}
                         className="w-full h-full border-0"
                         title={selectedCert.title}
                       />
@@ -389,11 +484,21 @@ const Certifications = () => {
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-white text-center px-6">
-                    {statusIcon[selectedCert.statusType]}
-                    <h3 className="text-xl font-bold mt-4 mb-3">
+                    <div
+                      className={`inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border uppercase tracking-widest ${
+                        statusStyle[selectedCert.statusType]
+                      }`}
+                    >
+                      {statusIcon[selectedCert.statusType]}
+                      {selectedCert.status}
+                    </div>
+
+                    <h3 className="text-xl font-bold mt-5 mb-3">
                       {selectedCert.title}
                     </h3>
-                    <p className="text-slate-400">{selectedCert.status}</p>
+                    <p className="text-slate-400 max-w-md">
+                      {selectedCert.description}
+                    </p>
                   </div>
                 )}
               </motion.div>
