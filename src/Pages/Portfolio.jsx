@@ -25,9 +25,9 @@ const ToggleButton = ({ onClick, isShowingMore }) => (
   </button>
 );
 
-function TabPanel({ children, value, index, ...other }) {
+function TabPanel({ children, value, index }) {
   return (
-    <div role="tabpanel" hidden={value !== index} {...other}>
+    <div role="tabpanel" hidden={value !== index}>
       {value === index && (
         <Box sx={{ p: { xs: 0, sm: 2 }, mt: 2 }}>
           <motion.div
@@ -65,8 +65,6 @@ export default function Portfolio() {
 
       if (error) throw error;
 
-      const rawProjects = proj || [];
-
       const priorityOrder = [
         "DDoS",
         "SOAR",
@@ -78,7 +76,7 @@ export default function Portfolio() {
         "WAF",
       ];
 
-      const sortedProjects = [...rawProjects].sort((a, b) => {
+      const sortedProjects = (proj || []).sort((a, b) => {
         const getRank = (title = "") => {
           const index = priorityOrder.findIndex((key) =>
             title.toLowerCase().includes(key.toLowerCase())
@@ -103,7 +101,6 @@ export default function Portfolio() {
   }, [fetchData]);
 
   const handleChange = (_, newValue) => setValue(newValue);
-
   const visibleProjects = showAllProjects ? projects : projects.slice(0, 6);
 
   return (
@@ -114,6 +111,7 @@ export default function Portfolio() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.08),transparent_55%)] pointer-events-none" />
 
       <div className="relative z-10">
+        {/* HEADER */}
         <div className="text-center mb-12">
           <p className="text-emerald-400 text-xs font-mono uppercase tracking-[0.35em] mb-3">
             Proof of Work
@@ -128,6 +126,7 @@ export default function Portfolio() {
           </p>
         </div>
 
+        {/* TABS */}
         <Box sx={{ width: "100%" }}>
           <AppBar
             position="static"
@@ -175,6 +174,7 @@ export default function Portfolio() {
             </Tabs>
           </AppBar>
 
+          {/* PROJECTS */}
           <TabPanel value={value} index={0}>
             {error && (
               <div className="text-center py-10 text-red-400 text-sm">
@@ -189,7 +189,7 @@ export default function Portfolio() {
                       <Skeleton
                         key={i}
                         variant="rectangular"
-                        height={350}
+                        height={460}
                         sx={{
                           bgcolor: "rgba(255,255,255,0.05)",
                           borderRadius: "24px",
@@ -225,6 +225,7 @@ export default function Portfolio() {
             )}
           </TabPanel>
 
+          {/* CERTIFICATIONS */}
           <TabPanel value={value} index={1}>
             <Certifications />
           </TabPanel>
