@@ -201,7 +201,7 @@ export default function Portfolio() {
                         key={project.id || index}
                         data-aos="zoom-in-up"
                         data-aos-delay={index * 50}
-                        className="h-full"
+                        className="h-full flex"
                       >
                         <CardProject {...project} />
                       </div>

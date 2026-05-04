@@ -66,8 +66,8 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
     const y = (e.clientY - rect.top) / rect.height;
 
     card.style.transform = `perspective(1000px) rotateX(${
-      (0.5 - y) * 5
-    }deg) rotateY(${(x - 0.5) * 5}deg) translateY(-3px)`;
+      (0.5 - y) * 4
+    }deg) rotateY(${(x - 0.5) * 4}deg) translateY(-4px)`;
 
     card.style.setProperty("--x", `${x * 100}%`);
     card.style.setProperty("--y", `${y * 100}%`);
@@ -89,31 +89,34 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
         onMouseLeave={handleMouseLeave}
         className="relative flex-1 h-full transition-all duration-300 ease-out will-change-transform"
       >
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-500" />
+        <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-emerald-500/20 via-blue-500/10 to-purple-500/20 opacity-0 blur-xl group-hover:opacity-100 transition duration-700" />
 
-        <div className="relative h-full min-h-[420px] flex flex-col justify-between rounded-3xl bg-[#08111d]/90 backdrop-blur-2xl border border-white/10 p-5 pb-6 overflow-hidden shadow-xl transition-all duration-500 group-hover:border-emerald-500/30">
+        <div className="relative h-full min-h-[430px] flex flex-col justify-between rounded-3xl bg-[#08111d]/90 backdrop-blur-2xl border border-white/10 p-5 pb-6 overflow-hidden shadow-xl transition-all duration-500 group-hover:border-emerald-500/40 group-hover:shadow-emerald-500/10">
           <div
             className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500"
             style={{
               background:
-                "radial-gradient(450px at var(--x) var(--y), rgba(16,185,129,0.12), transparent 45%)",
+                "radial-gradient(500px at var(--x) var(--y), rgba(16,185,129,0.13), transparent 45%)",
             }}
           />
 
-          <div className="relative rounded-2xl overflow-hidden bg-[#050812] h-[150px] flex items-center justify-center flex-shrink-0 border border-white/5">
+          {/* IMAGE - FIXED CROPPING */}
+          <div className="relative rounded-2xl overflow-hidden bg-[#050812] aspect-[16/9] flex items-center justify-center flex-shrink-0 border border-white/5">
             <img
               src={Img}
               alt={Title}
               loading="lazy"
-              className="w-full h-full object-cover object-top rounded-xl transition duration-500 group-hover:scale-[1.03]"
+              className="w-full h-full object-cover object-center rounded-xl transition duration-700 group-hover:scale-[1.04]"
               onError={(e) => {
                 e.currentTarget.src =
                   "https://www.svgrepo.com/show/354313/security.svg";
               }}
             />
 
+            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
+
             {isFeatured && (
-              <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 backdrop-blur-xl">
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-xl">
                 <ShieldCheck size={12} className="text-emerald-400" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">
                   Featured
@@ -121,7 +124,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
               </div>
             )}
 
-            <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 backdrop-blur-xl">
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/25 backdrop-blur-xl">
               <Layers size={12} className="text-blue-400" />
               <span className="text-[9px] font-black uppercase tracking-widest text-blue-400">
                 {difficulty}
