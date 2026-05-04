@@ -66,8 +66,8 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
     const y = (e.clientY - rect.top) / rect.height;
 
     card.style.transform = `perspective(1000px) rotateX(${
-      (0.5 - y) * 6
-    }deg) rotateY(${(x - 0.5) * 6}deg) translateY(-4px)`;
+      (0.5 - y) * 5
+    }deg) rotateY(${(x - 0.5) * 5}deg) translateY(-3px)`;
 
     card.style.setProperty("--x", `${x * 100}%`);
     card.style.setProperty("--y", `${y * 100}%`);
@@ -91,7 +91,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
       >
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-500" />
 
-        <div className="relative h-full min-h-[460px] flex flex-col justify-between rounded-3xl bg-[#08111d]/90 backdrop-blur-2xl border border-white/10 p-5 overflow-hidden shadow-xl transition-all duration-500 group-hover:border-emerald-500/30">
+        <div className="relative h-full min-h-[420px] flex flex-col justify-between rounded-3xl bg-[#08111d]/90 backdrop-blur-2xl border border-white/10 p-5 pb-6 overflow-hidden shadow-xl transition-all duration-500 group-hover:border-emerald-500/30">
           <div
             className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500"
             style={{
@@ -100,7 +100,7 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
             }}
           />
 
-          <div className="relative rounded-2xl overflow-hidden bg-[#050812] h-[175px] flex items-center justify-center flex-shrink-0 border border-white/5">
+          <div className="relative rounded-2xl overflow-hidden bg-[#050812] h-[150px] flex items-center justify-center flex-shrink-0 border border-white/5">
             <img
               src={Img}
               alt={Title}
@@ -130,15 +130,15 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
           </div>
 
           <div className="relative z-10 mt-5 flex flex-col flex-grow">
-            <h3 className="text-xl font-black text-white mb-3 leading-tight min-h-[60px] group-hover:text-emerald-400 transition">
+            <h3 className="text-xl font-black text-white mb-3 leading-tight min-h-[56px] group-hover:text-emerald-400 transition">
               {Title}
             </h3>
 
-            <p className="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-4 min-h-[72px]">
+            <p className="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-4 min-h-[66px]">
               {Description}
             </p>
 
-            <div className="flex flex-wrap gap-2 mb-5 min-h-[34px]">
+            <div className="flex flex-wrap gap-2 mb-4 min-h-[32px]">
               {tags.map((tag) => (
                 <span
                   key={tag}

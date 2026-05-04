@@ -111,7 +111,6 @@ export default function Portfolio() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.08),transparent_55%)] pointer-events-none" />
 
       <div className="relative z-10">
-        {/* HEADER */}
         <div className="text-center mb-12">
           <p className="text-emerald-400 text-xs font-mono uppercase tracking-[0.35em] mb-3">
             Proof of Work
@@ -122,11 +121,11 @@ export default function Portfolio() {
           </h2>
 
           <p className="text-slate-400 text-sm mt-4 max-w-3xl mx-auto leading-relaxed">
-            Real-world cloud security, SOC monitoring, SIEM/SOAR, and threat detection labs aligned with Cybersecurity Engineer roles.
+            Real-world cloud security, SOC monitoring, SIEM/SOAR, and threat
+            detection labs aligned with Cybersecurity Engineer roles.
           </p>
         </div>
 
-        {/* TABS */}
         <Box sx={{ width: "100%" }}>
           <AppBar
             position="static"
@@ -153,7 +152,9 @@ export default function Portfolio() {
               }}
             >
               <Tab
-                icon={<ShieldCheck className="w-5 h-5 mb-1 text-emerald-500" />}
+                icon={
+                  <ShieldCheck className="w-5 h-5 mb-1 text-emerald-500" />
+                }
                 label="Security Labs"
                 sx={{
                   color: "#94a3b8",
@@ -174,7 +175,6 @@ export default function Portfolio() {
             </Tabs>
           </AppBar>
 
-          {/* PROJECTS */}
           <TabPanel value={value} index={0}>
             {error && (
               <div className="text-center py-10 text-red-400 text-sm">
@@ -183,13 +183,13 @@ export default function Portfolio() {
             )}
 
             {!error && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-fr">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
                 {loading
                   ? [...Array(6)].map((_, i) => (
                       <Skeleton
                         key={i}
                         variant="rectangular"
-                        height={460}
+                        height={420}
                         sx={{
                           bgcolor: "rgba(255,255,255,0.05)",
                           borderRadius: "24px",
@@ -225,7 +225,6 @@ export default function Portfolio() {
             )}
           </TabPanel>
 
-          {/* CERTIFICATIONS */}
           <TabPanel value={value} index={1}>
             <Certifications />
           </TabPanel>
