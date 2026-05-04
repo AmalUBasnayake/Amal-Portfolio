@@ -176,7 +176,7 @@ const Certifications = () => {
           </div>
         </div>
 
-        {/* HND COMPLETION HIGHLIGHT - ENGINEER LEVEL UI */}
+        {/* HND COMPLETION HIGHLIGHT */}
         <div className="mb-10 relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/[0.10] via-[#07111f] to-cyan-500/[0.06] p-6 md:p-8 shadow-[0_0_50px_rgba(16,185,129,0.10)]">
           <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 blur-3xl rounded-full" />
           <div className="absolute -bottom-16 -left-16 w-60 h-60 bg-cyan-500/10 blur-3xl rounded-full" />
@@ -443,7 +443,7 @@ const Certifications = () => {
                 exit={{ scale: 0.92, opacity: 0, y: 20 }}
                 transition={{ type: "spring", stiffness: 180, damping: 22 }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-[98vw] h-[96vh] bg-[#050812] border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.16)]"
+                className="relative w-[96vw] h-[90vh] md:h-[92vh] bg-[#050812] border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.16)]"
               >
                 <div className="absolute top-0 left-0 right-0 z-20 px-5 py-4 bg-black/70 backdrop-blur-xl border-b border-white/10 flex items-center justify-between gap-4">
                   <div>
@@ -465,9 +465,9 @@ const Certifications = () => {
 
                 {selectedCert.pdfUrl ? (
                   <>
-                    <div className="w-full h-full pt-[76px] bg-black">
+                    <div className="w-full h-full pt-[76px] bg-[#2b2b2b]">
                       <iframe
-                        src={`${selectedCert.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH&zoom=130`}
+                        src={`${selectedCert.pdfUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
                         className="w-full h-full border-0"
                         title={selectedCert.title}
                       />
