@@ -16,7 +16,7 @@ const HireMe = () => {
     }
 
     const link = document.createElement("a");
-    link.href = "/amal-cv.pdf";
+    link.href = "/Amal_Udayanga_Basnayake_Cybersecurity_Engineer_CV.pdf";
     link.download = "Amal_Udayanga_CV.pdf";
     document.body.appendChild(link);
     link.click();
