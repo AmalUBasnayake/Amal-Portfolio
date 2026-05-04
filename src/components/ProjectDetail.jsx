@@ -10,6 +10,8 @@ import {
   Server,
   ShieldAlert,
   ExternalLink,
+  Network,
+  Activity,
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -23,8 +25,8 @@ const ProjectDetails = () => {
   const [loading, setLoading] = useState(true);
 
   const { scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 1.08]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.82]);
+  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 1.05]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.86]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -103,8 +105,7 @@ const ProjectDetails = () => {
 
   return (
     <div className="bg-[#030712] text-white min-h-screen font-sans selection:bg-emerald-500/30">
-      {/* NAV */}
-      <nav className="fixed top-0 w-full z-50 px-[5%] py-6 backdrop-blur-md bg-[#030712]/70 border-b border-white/5">
+      <nav className="fixed top-0 w-full z-50 px-[5%] py-6 backdrop-blur-md bg-[#030712]/75 border-b border-white/5">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link
             to="/"
@@ -122,19 +123,19 @@ const ProjectDetails = () => {
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-24">
+      <section className="relative min-h-[82vh] flex items-center justify-center overflow-hidden pt-28 pb-20">
         <motion.div style={{ scale, opacity }} className="absolute inset-0">
           <img
             src={projectImage}
             alt={project.Title || "Cybersecurity Project"}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
             onError={(e) => {
               e.currentTarget.src = fallbackImage;
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/72 via-[#030712]/90 to-[#030712]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(16,185,129,0.12),transparent_35%)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/70 via-[#030712]/88 to-[#030712]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(16,185,129,0.14),transparent_35%)]" />
         </motion.div>
 
         <div
@@ -145,11 +146,11 @@ const ProjectDetails = () => {
             {project.category || "Cybersecurity Engineering"}
           </span>
 
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent italic uppercase leading-[1.05]">
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent italic uppercase leading-[1.05] drop-shadow-2xl">
             {project.Title}
           </h1>
 
-          <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-base md:text-xl leading-relaxed font-light">
+          <p className="text-gray-300 mt-4 max-w-2xl mx-auto text-base md:text-xl leading-relaxed font-light">
             {project.Description}
           </p>
 
@@ -186,11 +187,9 @@ const ProjectDetails = () => {
         </div>
       </section>
 
-      {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-[5%] pt-16 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-          {/* MAIN */}
-          <div className="lg:col-span-2 space-y-24">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+          <div className="lg:col-span-2 space-y-16">
             <section data-aos="fade-up">
               <div className="flex items-center gap-4 mb-10">
                 <div className="h-[1px] flex-grow bg-white/10" />
@@ -205,7 +204,7 @@ const ProjectDetails = () => {
                 <img
                   src={projectImage}
                   alt="Lab Preview"
-                  className="w-full h-auto rounded-[1.8rem] transition-transform duration-700 group-hover:scale-[1.01]"
+                  className="w-full aspect-[16/9] object-cover object-center rounded-[1.8rem] transition-transform duration-700 group-hover:scale-[1.01]"
                   onError={(e) => {
                     e.currentTarget.src = fallbackImage;
                   }}
@@ -249,9 +248,36 @@ const ProjectDetails = () => {
                 </div>
               </div>
             </section>
+
+            <section
+              data-aos="fade-up"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              <div className="rounded-[2rem] border border-white/10 bg-white/[0.02] p-8">
+                <Network className="text-emerald-400 mb-5" />
+                <h4 className="text-white font-black uppercase tracking-widest text-sm mb-3">
+                  Architecture Focus
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Built to demonstrate secure design principles, network
+                  segmentation, monitoring visibility, and practical security
+                  engineering workflows.
+                </p>
+              </div>
+
+              <div className="rounded-[2rem] border border-white/10 bg-white/[0.02] p-8">
+                <Activity className="text-blue-400 mb-5" />
+                <h4 className="text-white font-black uppercase tracking-widest text-sm mb-3">
+                  Detection Outcome
+                </h4>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Focused on improving visibility, reducing attack surface, and
+                  validating security controls through hands-on implementation.
+                </p>
+              </div>
+            </section>
           </div>
 
-          {/* SIDEBAR */}
           <aside className="space-y-8">
             <div
               className="p-8 md:p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 backdrop-blur-sm sticky top-32"
@@ -325,7 +351,6 @@ const ProjectDetails = () => {
         </div>
       </div>
 
-      {/* FOOTER CTA */}
       <section className="py-24 text-center border-t border-white/5 bg-gradient-to-b from-transparent to-emerald-500/[0.01]">
         <h2 className="text-2xl font-black italic uppercase tracking-tighter opacity-20 mb-10">
           End of Laboratory Transmission
