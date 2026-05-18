@@ -17,20 +17,37 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
     "sentinel-siem",
     "honeypot-map",
     "vuln-management",
+    "blob-zero-trust",
+    "sql-advanced-security",
   ].includes(id);
 
   const getTags = (title = "") => {
     const t = title.toLowerCase();
 
+    if (t.includes("blob"))
+      return ["Azure Storage", "Zero Trust", "Private Endpoint"];
+
+    if (t.includes("sql advanced"))
+      return ["Azure SQL", "Data Security", "Zero Trust"];
+
+    if (t.includes("sql private"))
+      return ["Private Endpoint", "Azure SQL", "VNet"];
+
     if (t.includes("sentinel") || t.includes("siem"))
       return ["Azure", "Sentinel", "SIEM"];
+
     if (t.includes("soar")) return ["SOAR", "Logic Apps", "Automation"];
+
     if (t.includes("ddos")) return ["Azure", "DDoS", "Network"];
+
     if (t.includes("honeypot")) return ["Threat Intel", "SOC", "Attack Map"];
+
     if (t.includes("nessus") || t.includes("vulnerability"))
       return ["Nessus", "VM", "Risk"];
+
     if (t.includes("firewall"))
       return ["Azure Firewall", "Zero Trust", "Network"];
+
     if (t.includes("waf")) return ["WAF", "App Gateway", "Web Security"];
 
     return ["Cloud Security", "Hands-On", "Lab"];
@@ -44,7 +61,10 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
       t.includes("soar") ||
       t.includes("honeypot") ||
       t.includes("firewall") ||
-      t.includes("ddos")
+      t.includes("ddos") ||
+      t.includes("blob") ||
+      t.includes("sql") ||
+      t.includes("private endpoint")
     ) {
       return "Advanced";
     }
@@ -100,16 +120,15 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
             }}
           />
 
-          {/* IMAGE - FIXED CROPPING */}
+          {/* IMAGE */}
           <div className="relative rounded-2xl overflow-hidden bg-[#050812] aspect-[16/9] flex items-center justify-center flex-shrink-0 border border-white/5">
             <img
               src={Img}
               alt={Title}
               loading="lazy"
-              className="w-full h-full object-cover object-center rounded-xl transition duration-700 group-hover:scale-[1.04]"
+              className="w-full h-full object-cover object-center rounded-xl transition duration-700 group-hover:scale-[1.06]"
               onError={(e) => {
-                e.currentTarget.src =
-                  "https://www.svgrepo.com/show/354313/security.svg";
+                e.currentTarget.src = "/projects/default-cyber.jpg";
               }}
             />
 
