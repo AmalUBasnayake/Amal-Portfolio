@@ -139,7 +139,7 @@ const Home = ({ labMode, setLabMode }) => {
               <br />
               Building{" "}
               <span className="text-emerald-400 font-black uppercase">
-                30+ real-world cybersecurity labs
+                32+ real-world cybersecurity labs
               </span>{" "}
               across Azure Security, Microsoft Sentinel, Splunk, SOAR
               automation, Zero Trust identity, WAF, Key Vault, and threat
