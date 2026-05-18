@@ -65,7 +65,11 @@ export default function Portfolio() {
 
       if (error) throw error;
 
+      // UPDATED PRIORITY ORDER
       const priorityOrder = [
+        "Blob Storage",
+        "SQL Advanced",
+        "SQL Private",
         "DDoS",
         "SOAR",
         "Sentinel",
@@ -74,6 +78,8 @@ export default function Portfolio() {
         "Honeypot",
         "Firewall",
         "WAF",
+        "Private Endpoint",
+        "Zero Trust",
       ];
 
       const sortedProjects = (proj || []).sort((a, b) => {
