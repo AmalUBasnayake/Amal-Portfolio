@@ -191,7 +191,7 @@ const AboutPage = () => {
   const y = useTransform(scrollY, [0, 500], [0, -50]);
 
   const stats = [
-    { icon: Shield, value: "28", label: "Security Labs" },
+    { icon: Shield, value: "32", label: "Security Labs" },
     { icon: Award, value: "35", label: "Learning Achievements" },
     { icon: Globe, value: "5", label: "Years IT Experience" },
   ];
@@ -246,7 +246,7 @@ const AboutPage = () => {
         </p>
 
         <p className="text-emerald-400 text-sm mt-2 font-mono">
-          ✔ 5+ Years Experience • ✔ 28+ Labs • ✔ 4,000+ Users Managed
+          ✔ 5+ Years Experience • ✔ 32+ Labs • ✔ 4,000+ Users Managed
         </p>
       </div>
 
@@ -290,7 +290,7 @@ const AboutPage = () => {
                 Azure Security, SOC monitoring, SIEM/SOAR, threat detection, and
                 cloud security engineering
               </strong>
-              . I have built 28+ real-world security labs covering Microsoft
+              . I have built 32+ real-world security labs covering Microsoft
               Sentinel, Splunk, Azure hardening, honeypots, SOAR automation,
               vulnerability management, and incident response.
             </p>
