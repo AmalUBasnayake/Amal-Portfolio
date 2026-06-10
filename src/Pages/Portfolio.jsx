@@ -67,6 +67,9 @@ export default function Portfolio() {
 
       // UPDATED PRIORITY ORDER
       const priorityOrder = [
+         "OpenAI",
+         "Purview",
+         "Content Safety",
         "Blob Storage",
         "SQL Advanced",
         "SQL Private",
@@ -80,6 +83,7 @@ export default function Portfolio() {
         "WAF",
         "Private Endpoint",
         "Zero Trust",
+        
       ];
 
       const sortedProjects = (proj || []).sort((a, b) => {
