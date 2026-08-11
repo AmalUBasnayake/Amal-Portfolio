@@ -5,11 +5,11 @@ import ParticlesBg from "./ParticlesBg";
 import { Cloud, ShieldCheck, Activity, Network } from "lucide-react";
 
  const skills = [
-  {
-    name: "Azure",
-    icon: "/icons/Azure.png",
-    category: "Cloud",
-  },
+    {
+  name: "Azure",
+  icon: "/icons/azure.png",
+  category: "Cloud",
+},
   {
     name: "Microsoft Sentinel",
     icon: "/icons/sentinel.png",
