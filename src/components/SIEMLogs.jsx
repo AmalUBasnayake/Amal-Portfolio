@@ -21,7 +21,7 @@ const SIEMLogs = () => {
   }, []);
 
   return (
-    // 📍 මම මේක දකුණු පැත්තේ පල්ලෙහාට (right-8 bottom-10) මාරු කළා
+    
     <div className="fixed bottom-10 right-8 z-[100] w-[280px] pointer-events-none">
       <div className="bg-black/80 backdrop-blur-xl border border-red-500/20 rounded-2xl p-4 shadow-[0_0_30px_rgba(239,68,68,0.15)] pointer-events-auto">
         

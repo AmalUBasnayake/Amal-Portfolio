@@ -7,6 +7,7 @@ import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Navbar from "./components/Navbar";
 import Portfolio from "./Pages/Portfolio";
+import Articles from "./components/Articles";
 import Skills from "./components/Skills";
 import Services from "./Pages/Services";
 import ContactPage from "./Pages/Contact";
@@ -70,6 +71,7 @@ const LandingPage = ({ showWelcome, setShowWelcome, labMode, setLabMode }) => {
       <About />
       <Skills />
       <Portfolio />
+      <Articles />
       <HireMe />
       <Services />
       <ContactPage />

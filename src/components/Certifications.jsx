@@ -1,511 +1,1644 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
-  ShieldCheck,
   Loader2,
   X,
   Clock,
   FileCheck,
-  Download,
+  GraduationCap,
+  BookOpen,
+  Trophy,
+  Network,
+  Target,
+  Cloud,
+  Shield,
+  ShieldCheck,
+  Award,
+  CheckCircle2,
+  ArrowUpRight,
 } from "lucide-react";
 
-const Certifications = () => {
-  const [filter, setFilter] = useState("All");
-  const [selectedCert, setSelectedCert] = useState(null);
+/* ============================================================
+   CREDENTIAL DATA
+   ============================================================ */
 
-  const certificationsList = [
-    {
-      title: "Pearson BTEC HND in Cybersecurity",
-      org: "Pearson BTEC Level 5 • Achievers International Campus",
-      description:
-        "Completed April 2026 • 240 Credits • Distinction in Digital Forensics & Information Security Management",
-      category: "Academic",
-      status: "Completed",
-      statusType: "verified",
-      pdfUrl: "/certificates/Amal_Basnayake_HND_Completion_Letter.pdf",
-      image: "/certificates/btec-hnd.png",
-    },
-    {
-      title: "Azure Security Engineer Path (AZ-500)",
-      org: "Microsoft",
-      description: "Cloud identity, threat protection & SOC engineering",
-      category: "Cloud",
-      status: "In Progress",
-      statusType: "progress",
-      pdfUrl: null,
-      image: "/certificates/az500.png",
-    },
-    {
-      title: "ISO 27001 Lead Auditor",
-      org: "Mastermind",
-      description: "ISMS auditing & enterprise compliance",
-      category: "Compliance",
-      status: "Verified",
-      statusType: "verified",
-      pdfUrl: "/certificates/iso-27001.pdf",
-      image: "/certificates/iso-27001.png",
-    },
-    {
-      title: "Blue Team Junior Analyst",
-      org: "Security Blue Team",
-      description: "SOC operations & threat detection",
-      category: "Defensive",
-      status: "Verified",
-      statusType: "verified",
-      pdfUrl: "/certificates/btja.pdf",
-      image: "/certificates/btja.png",
-    },
-    {
-      title: "CCNA (Cisco Certified Network Associate)",
-      org: "Cisco",
-      description: "Network fundamentals & security",
-      category: "Networking",
-      status: "Verified",
-      statusType: "verified",
-      pdfUrl: "/certificates/ccna.pdf",
-      image: "/certificates/ccna.png",
-    },
-    {
-      title: "Red Team Operations",
-      org: "Red Team Leaders",
-      description: "Adversary simulation & exploitation",
-      category: "Offensive",
-      status: "Verified",
-      statusType: "verified",
-      pdfUrl: "/certificates/red-team.pdf",
-      image: "/certificates/red-team.png",
-    },
-  ];
+const certificationsList = [
+  {
+    title: "BSc (Hons) Cyber Security",
+    org: "University of Wolverhampton • United Kingdom",
+    description:
+      "Cybersecurity top-up degree commencing September 2026, covering digital forensics, cyber risk, threat intelligence, advanced networks, and professional cybersecurity practice.",
+    category: "Academic",
+    status: "Starting Sep 2026",
+    statusType: "pending",
+    pdfUrl: null,
+    image: "/certificates/wolverhampton-bsc.png",
+    featured: true,
+    icon: GraduationCap,
+    priority: 1,
+  },
 
-  const socialLinks = [
-    {
-      name: "Microsoft Learn",
-      url: "https://learn.microsoft.com/en-us/users/amaludayangabasnayake/",
-    },
-    {
-      name: "Credly",
-      url: "https://www.credly.com/users/amal-udayanga-basnayake",
-    },
-    {
-      name: "Cisco NetAcad",
-      url: "https://www.netacad.com/profile?tab=badges",
-    },
-    {
-      name: "Hack The Box",
-      url: "https://academy.hackthebox.com/dashboard",
-    },
-    {
-      name: "TryHackMe",
-      url: "https://tryhackme.com/p/amalubasnayake",
-    },
-  ];
+  {
+    title: "Pearson BTEC HND in Cybersecurity",
+    org: "Pearson BTEC Level 5 • Achievers International Campus",
+    description:
+      "Completed April 2026 • 240 Credits • Distinction in Digital Forensics & Information Security Management.",
+    category: "Academic",
+    status: "Completed",
+    statusType: "verified",
+    pdfUrl:
+      "/certificates/Amal_Basnayake_HND_Completion_Letter.pdf",
+    image: "/certificates/btec-hnd.png",
+    featured: true,
+    icon: GraduationCap,
+    priority: 2,
+  },
 
-  const categories = [
-    "All",
-    "Cloud",
-    "Networking",
-    "Defensive",
-    "Offensive",
-    "Compliance",
-    "Academic",
-  ];
+  {
+    title: "Cloud and AI Security Engineer Associate (SC-500)",
+    org: "Microsoft",
+    description:
+      "Current Cloud & AI Security Engineer pathway focused on end-to-end protection for cloud and AI workloads, identity, data, AI security, threat defense, and enterprise security operations.",
+    category: "Cloud",
+    status: "Retake Preparation",
+    statusType: "progress",
+    pdfUrl: null,
+    image: "/certificates/sc500.png",
+    featured: true,
+    icon: Cloud,
+    priority: 3,
+  },
 
-  const filteredCerts =
-    filter === "All"
-      ? certificationsList
-      : certificationsList.filter((cert) => cert.category === filter);
+  {
+    title: "ISO/IEC 27001 Lead Auditor",
+    org: "Mastermind",
+    description:
+      "Information Security Management System auditing, risk-based controls, compliance, and enterprise information security governance.",
+    category: "Compliance",
+    status: "Verified",
+    statusType: "verified",
+    pdfUrl: "/certificates/iso-27001.pdf",
+    image: "/certificates/iso-27001.png",
+    featured: true,
+    icon: ShieldCheck,
+    priority: 4,
+  },
 
-  const statusStyle = {
-    verified: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    progress: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-    pending: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  };
+  {
+    title: "ISO/IEC 27701:2025 Lead Auditor",
+    org: "Mastermind",
+    description:
+      "Privacy Information Management System auditing, privacy controls, data protection, and information privacy compliance.",
+    category: "Compliance",
+    status: "Verified",
+    statusType: "verified",
+    pdfUrl: "/certificates/iso-27701.pdf",
+    image: "/certificates/iso-27701.png",
+    featured: true,
+    icon: Shield,
+    priority: 5,
+  },
 
-  const statusIcon = {
-    verified: <ShieldCheck size={13} />,
-    progress: <Loader2 size={13} className="animate-spin" />,
-    pending: <Clock size={13} />,
-  };
+  {
+    title:
+      "Microsoft Applied Skills: Create Agents in Copilot Studio",
+    org: "Microsoft",
+    description:
+      "Hands-on Applied Skills credential covering the creation and configuration of AI agents using Microsoft Copilot Studio.",
+    category: "Cloud",
+    status: "Verified",
+    statusType: "verified",
+    pdfUrl: null,
+    image:
+      "/certificates/ms-applied-skills-copilot-studio.png",
+    featured: true,
+    icon: Cloud,
+    priority: 6,
+  },
+
+  {
+    title: "Blue Team Junior Analyst",
+    org: "Security Blue Team",
+    description:
+      "Foundational defensive security capabilities covering SOC operations, security monitoring, investigation, and threat detection.",
+    category: "Defensive",
+    status: "Verified",
+    statusType: "verified",
+    pdfUrl: "/certificates/btja.pdf",
+    image: "/certificates/btja.png",
+    featured: true,
+    icon: ShieldCheck,
+    priority: 7,
+  },
+
+  {
+    title: "CCNA (Cisco Certified Network Associate)",
+    org: "Cisco",
+    description:
+      "Networking fundamentals covering network infrastructure, connectivity, protocols, troubleshooting, and security fundamentals.",
+    category: "Networking",
+    status: "Verified",
+    statusType: "verified",
+    pdfUrl: "/certificates/ccna.pdf",
+    image: "/certificates/ccna.png",
+    featured: true,
+    icon: Network,
+    priority: 8,
+  },
+
+  {
+    title: "Red Team Operations",
+    org: "Red Team Leaders",
+    description:
+      "Adversary simulation, offensive security methodology, exploitation concepts, and practical penetration testing foundations.",
+    category: "Offensive",
+    status: "Verified",
+    statusType: "verified",
+    pdfUrl: "/certificates/red-team.pdf",
+    image: "/certificates/red-team.png",
+    featured: false,
+    icon: Target,
+    priority: 9,
+  },
+];
+
+/* ============================================================
+   VERIFIED PROFILES
+   ============================================================ */
+
+const socialLinks = [
+  {
+    name: "Microsoft Learn",
+    url: "https://learn.microsoft.com/en-us/users/amaludayangabasnayake/",
+  },
+  {
+    name: "Credly",
+    url: "https://www.credly.com/users/amal-udayanga-basnayake",
+  },
+  {
+    name: "Cisco NetAcad",
+    url: "https://www.netacad.com/profile?tab=badges",
+  },
+  {
+    name: "Hack The Box",
+    url: "https://academy.hackthebox.com/dashboard",
+  },
+  {
+    name: "TryHackMe",
+    url: "https://tryhackme.com/p/amalubasnayake",
+  },
+];
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+
+const categories = [
+  "All",
+  "Academic",
+  "Cloud",
+  "Compliance",
+  "Defensive",
+  "Networking",
+  "Offensive",
+];
+
+/* ============================================================
+   STATUS CONFIG
+   ============================================================ */
+
+const statusConfig = {
+  verified: {
+    label: "Verified",
+    className:
+      "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    icon: ShieldCheck,
+  },
+
+  progress: {
+    label: "Active Track",
+    className:
+      "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    icon: Loader2,
+  },
+
+  pending: {
+    label: "Upcoming",
+    className:
+      "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    icon: Clock,
+  },
+};
+
+/* ============================================================
+   STATUS BADGE
+   ============================================================ */
+
+const StatusBadge = ({ type, status }) => {
+  const config =
+    statusConfig[type] || statusConfig.verified;
+
+  const Icon = config.icon;
 
   return (
-    <section className="relative py-28 px-[5%] md:px-[10%] bg-[#030712] overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.07),transparent_60%)] pointer-events-none" />
+    <span
+      className={`
+        inline-flex
+        items-center
+        gap-1.5
+        rounded-full
+        border
+        px-2.5
+        py-1
+        text-[9px]
+        font-black
+        uppercase
+        tracking-[0.14em]
+        ${config.className}
+      `}
+    >
+      <Icon
+        size={12}
+        className={
+          type === "progress"
+            ? "animate-spin"
+            : ""
+        }
+      />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* HEADER */}
-        <div className="mb-12">
-          <p className="text-emerald-400 text-xs font-mono uppercase tracking-[0.35em] mb-3">
-            Verification Dashboard
-          </p>
+      {status || config.label}
+    </span>
+  );
+};
 
-          <h2 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tight leading-none">
-            Credential Intelligence Center.
-          </h2>
+/* ============================================================
+   METRIC CARD
+   ============================================================ */
 
-          <p className="text-slate-400 text-sm mt-4 max-w-3xl leading-relaxed">
-            6 Featured Credentials • 35+ Learning Achievements •
-            Cross-Platform Verification across Microsoft Learn, Credly, Cisco
-            NetAcad, Hack The Box, and TryHackMe.
-          </p>
+const MetricCard = ({
+  label,
+  value,
+  icon: Icon,
+  accent = "emerald",
+}) => (
+  <motion.div
+    whileHover={{ y: -4 }}
+    transition={{ duration: 0.2 }}
+    className={`
+      group
+      rounded-2xl
+      border
+      border-white/[0.07]
+      bg-white/[0.025]
+      p-5
+      backdrop-blur-xl
+      transition-all
+      duration-300
+      hover:border-${accent}-500/20
+    `}
+  >
+    <div className="flex items-center justify-between">
+      <span className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-600">
+        {label}
+      </span>
+
+      <Icon
+        size={18}
+        className={`text-${accent}-400`}
+      />
+    </div>
+
+    <p className="mt-3 text-2xl font-black text-white md:text-3xl">
+      {value}
+    </p>
+  </motion.div>
+);
+
+/* ============================================================
+   CREDENTIAL CARD
+   ============================================================ */
+
+const CredentialCard = ({
+  cert,
+  index,
+  onSelect,
+}) => {
+  const Icon = cert.icon || Award;
+
+  return (
+    <motion.article
+      layout
+      initial={{
+        opacity: 0,
+        y: 18,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 18,
+      }}
+      transition={{
+        duration: 0.3,
+        delay: index * 0.025,
+      }}
+      whileHover={{
+        y: -5,
+      }}
+      className="
+        group
+        flex
+        h-full
+        flex-col
+        overflow-hidden
+        rounded-3xl
+        border
+        border-white/[0.07]
+        bg-[#08111d]/80
+        shadow-[0_20px_60px_rgba(0,0,0,0.12)]
+        backdrop-blur-xl
+        transition-all
+        duration-300
+        hover:border-emerald-500/25
+        hover:shadow-[0_25px_80px_rgba(16,185,129,0.08)]
+      "
+    >
+      {/* Preview */}
+      <button
+        type="button"
+        onClick={() => onSelect(cert)}
+        aria-label={`Preview ${cert.title}`}
+        className="
+          relative
+          mx-4
+          mt-4
+          h-40
+          overflow-hidden
+          rounded-2xl
+          border
+          border-white/10
+          bg-white/[0.96]
+          focus:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-emerald-400
+        "
+      >
+        {cert.image ? (
+          <img
+            src={cert.image}
+            alt={cert.title}
+            loading="lazy"
+            className="
+              h-full
+              w-full
+              object-contain
+              p-3
+              transition-transform
+              duration-500
+              group-hover:scale-105
+            "
+            onError={(event) => {
+              event.currentTarget.style.display =
+                "none";
+
+              const fallback =
+                event.currentTarget.parentElement?.querySelector(
+                  ".credential-fallback"
+                );
+
+              if (fallback) {
+                fallback.classList.remove(
+                  "hidden"
+                );
+              }
+            }}
+          />
+        ) : null}
+
+        <div
+          className={`
+            credential-fallback
+            absolute
+            inset-0
+            ${
+              cert.image
+                ? "hidden"
+                : "flex"
+            }
+            items-center
+            justify-center
+            bg-[#07111f]
+          `}
+        >
+          <div
+            className="
+              flex
+              h-16
+              w-16
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              border-emerald-500/20
+              bg-emerald-500/10
+            "
+          >
+            <Icon
+              size={30}
+              className="text-emerald-400"
+            />
+          </div>
         </div>
 
-        {/* METRICS */}
-        <div className="grid md:grid-cols-3 gap-4 mb-14">
-          <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-5">
-            <p className="text-slate-500 text-xs uppercase tracking-widest">
-              Featured Credentials
-            </p>
-            <h3 className="text-3xl font-black text-white mt-2">6</h3>
+        {/* Hover layer */}
+        <div
+          className="
+            absolute
+            inset-0
+            flex
+            items-center
+            justify-center
+            bg-black/55
+            opacity-0
+            transition-opacity
+            duration-300
+            group-hover:opacity-100
+          "
+        >
+          <span
+            className="
+              rounded-xl
+              border
+              border-emerald-400/30
+              bg-emerald-500/20
+              px-4
+              py-2
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.16em]
+              text-white
+            "
+          >
+            Preview Credential
+          </span>
+        </div>
+      </button>
+
+      {/* Content */}
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-center justify-between gap-3">
+          <StatusBadge
+            type={cert.statusType}
+            status={cert.status}
+          />
+
+          {cert.featured && (
+            <span
+              className="
+                inline-flex
+                items-center
+                gap-1
+                text-[8px]
+                font-black
+                uppercase
+                tracking-[0.14em]
+                text-slate-600
+              "
+            >
+              <Trophy
+                size={11}
+                className="text-amber-400"
+              />
+              Featured
+            </span>
+          )}
+        </div>
+
+        <h3
+          className="
+            mt-4
+            min-h-[56px]
+            text-lg
+            font-black
+            leading-snug
+            text-white
+            transition-colors
+            duration-300
+            group-hover:text-emerald-400
+          "
+        >
+          {cert.title}
+        </h3>
+
+        <p className="mt-1 text-sm font-semibold text-slate-400">
+          {cert.org}
+        </p>
+
+        <p className="mt-3 min-h-[72px] text-xs leading-6 text-slate-600">
+          {cert.description}
+        </p>
+
+        <div className="mt-auto grid grid-cols-2 gap-3 pt-6">
+          <button
+            type="button"
+            onClick={() => onSelect(cert)}
+            className="
+              rounded-xl
+              border
+              border-emerald-500/20
+              bg-emerald-500/10
+              py-3
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.14em]
+              text-emerald-400
+              transition-all
+              duration-300
+              hover:bg-emerald-500/20
+              focus:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-emerald-400
+            "
+          >
+            {cert.pdfUrl
+              ? "Preview"
+              : "Details"}
+          </button>
+
+          <a
+            href={
+              cert.pdfUrl ||
+              socialLinks[0].url
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              inline-flex
+              items-center
+              justify-center
+              gap-1
+              rounded-xl
+              border
+              border-white/10
+              bg-white/[0.035]
+              py-3
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.14em]
+              text-slate-400
+              transition-all
+              duration-300
+              hover:bg-white/[0.08]
+              hover:text-white
+            "
+          >
+            {cert.pdfUrl
+              ? "Open"
+              : "Verify"}
+
+            <ExternalLink size={11} />
+          </a>
+        </div>
+      </div>
+    </motion.article>
+  );
+};
+
+/* ============================================================
+   ACADEMIC PROGRESSION
+   ============================================================ */
+
+const AcademicProgression = ({
+  onSelect,
+}) => {
+  const bsc = certificationsList[0];
+  const hnd = certificationsList[1];
+
+  return (
+    <section
+      className="
+        relative
+        mb-10
+        overflow-hidden
+        rounded-3xl
+        border
+        border-blue-500/15
+        bg-gradient-to-br
+        from-blue-500/[0.07]
+        via-[#07111f]
+        to-emerald-500/[0.045]
+        p-6
+        md:p-8
+      "
+    >
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          right-[-80px]
+          top-[-80px]
+          h-72
+          w-72
+          rounded-full
+          bg-blue-500/[0.08]
+          blur-3xl
+        "
+      />
+
+      <div className="relative z-10">
+        <div className="mb-6 flex items-center gap-3">
+          <div
+            className="
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
+              rounded-xl
+              border
+              border-blue-400/20
+              bg-blue-500/10
+            "
+          >
+            <GraduationCap
+              size={24}
+              className="text-blue-400"
+            />
           </div>
 
-          <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-5">
-            <p className="text-slate-500 text-xs uppercase tracking-widest">
-              Verified Records
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-[0.25em] text-blue-400">
+              Academic Progression
             </p>
-            <h3 className="text-3xl font-black text-emerald-400 mt-2">5</h3>
-          </div>
 
-          <div className="rounded-2xl bg-white/[0.03] border border-white/10 p-5">
-            <p className="text-slate-500 text-xs uppercase tracking-widest">
-              Active Certification
-            </p>
-            <h3 className="text-2xl font-black text-amber-400 mt-2">
-              AZ-500
+            <h3 className="mt-1 text-xl font-black text-white md:text-2xl">
+              Cybersecurity Education Path
             </h3>
           </div>
         </div>
 
-        {/* HND COMPLETION HIGHLIGHT */}
-        <div className="mb-10 relative overflow-hidden rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-500/[0.10] via-[#07111f] to-cyan-500/[0.06] p-6 md:p-8 shadow-[0_0_50px_rgba(16,185,129,0.10)]">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-500/10 blur-3xl rounded-full" />
-          <div className="absolute -bottom-16 -left-16 w-60 h-60 bg-cyan-500/10 blur-3xl rounded-full" />
+        <div className="grid gap-5 lg:grid-cols-2">
+          {/* BSc */}
+          <div
+            className="
+              relative
+              overflow-hidden
+              rounded-2xl
+              border
+              border-blue-500/20
+              bg-blue-500/[0.04]
+              p-5
+            "
+          >
+            <div
+              className="
+                absolute
+                right-0
+                top-0
+                rounded-bl-xl
+                border-b
+                border-l
+                border-blue-500/20
+                bg-blue-500/10
+                px-3
+                py-1.5
+              "
+            >
+              <span className="text-[8px] font-black uppercase tracking-widest text-blue-400">
+                Upcoming
+              </span>
+            </div>
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="flex gap-5">
-              <div className="hidden sm:flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/15 border border-emerald-400/30">
-                <ShieldCheck className="text-emerald-400" size={32} />
-              </div>
+            <GraduationCap
+              size={24}
+              className="mb-4 text-blue-400"
+            />
 
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/25 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-4">
-                  <ShieldCheck size={13} />
-                  Verified Academic Credential
-                </div>
+            <h4 className="text-lg font-black text-white">
+              {bsc.title}
+            </h4>
 
-                <h3 className="text-white text-2xl md:text-3xl font-black tracking-tight">
-                  Pearson BTEC HND in Cybersecurity
-                </h3>
+            <p className="mt-1 text-sm font-semibold text-blue-400">
+              {bsc.org}
+            </p>
 
-                <p className="text-slate-400 text-sm mt-2 max-w-2xl leading-relaxed">
-                  Official completion confirmation from Achievers International
-                  Campus. Completed with 240 credits, including Distinction
-                  grades in Digital Forensics and Information Security
-                  Management.
+            <p className="mt-3 text-xs leading-6 text-slate-500">
+              {bsc.description}
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                "Digital Forensics",
+                "Cyber Threat Intelligence",
+                "Advanced Networks",
+                "Cyber Risk",
+                "Professional Practice",
+              ].map((item) => (
+                <span
+                  key={item}
+                  className="
+                    rounded-lg
+                    border
+                    border-white/[0.07]
+                    bg-white/[0.035]
+                    px-2.5
+                    py-1
+                    text-[8px]
+                    font-mono
+                    text-slate-500
+                  "
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-5 flex items-center gap-2 text-xs font-bold text-blue-400">
+              <Clock size={14} />
+              Starting September 2026
+            </div>
+          </div>
+
+          {/* HND */}
+          <div
+            className="
+              relative
+              overflow-hidden
+              rounded-2xl
+              border
+              border-emerald-500/20
+              bg-emerald-500/[0.04]
+              p-5
+            "
+          >
+            <div
+              className="
+                absolute
+                right-0
+                top-0
+                rounded-bl-xl
+                border-b
+                border-l
+                border-emerald-500/20
+                bg-emerald-500/10
+                px-3
+                py-1.5
+              "
+            >
+              <span className="text-[8px] font-black uppercase tracking-widest text-emerald-400">
+                Completed
+              </span>
+            </div>
+
+            <BookOpen
+              size={24}
+              className="mb-4 text-emerald-400"
+            />
+
+            <h4 className="text-lg font-black text-white">
+              {hnd.title}
+            </h4>
+
+            <p className="mt-1 text-sm font-semibold text-emerald-400">
+              {hnd.org}
+            </p>
+
+            <p className="mt-3 text-xs leading-6 text-slate-500">
+              {hnd.description}
+            </p>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-xl border border-white/[0.07] bg-black/20 p-3">
+                <p className="text-[8px] uppercase tracking-widest text-slate-700">
+                  Credits
                 </p>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
-                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
-                      Status
-                    </p>
-                    <p className="text-emerald-400 font-black text-sm mt-1">
-                      Completed
-                    </p>
-                  </div>
+                <p className="mt-1 text-sm font-black text-white">
+                  240
+                </p>
+              </div>
 
-                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
-                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
-                      Credits
-                    </p>
-                    <p className="text-white font-black text-sm mt-1">240</p>
-                  </div>
+              <div className="rounded-xl border border-white/[0.07] bg-black/20 p-3">
+                <p className="text-[8px] uppercase tracking-widest text-slate-700">
+                  Achievement
+                </p>
 
-                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
-                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
-                      Grade
-                    </p>
-                    <p className="text-yellow-400 font-black text-sm mt-1">
-                      2 Distinctions
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl bg-black/25 border border-white/10 p-4">
-                    <p className="text-slate-500 text-[10px] uppercase tracking-widest">
-                      Certificate
-                    </p>
-                    <p className="text-blue-400 font-black text-sm mt-1">
-                      Pending
-                    </p>
-                  </div>
-                </div>
-
-                <p className="text-slate-500 text-xs mt-4">
-                  Official certificate pending — completion letter available for
-                  verification.
+                <p className="mt-1 text-sm font-black text-emerald-400">
+                  2 Distinctions
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[190px]">
-              <button
-                type="button"
-                onClick={() => setSelectedCert(certificationsList[0])}
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 text-black text-xs font-black uppercase tracking-widest hover:scale-105 transition shadow-[0_0_25px_rgba(16,185,129,0.25)]"
-              >
-                <ExternalLink size={15} />
-                View Letter
-              </button>
+            <button
+              type="button"
+              onClick={() => onSelect(hnd)}
+              className="
+                mt-5
+                inline-flex
+                items-center
+                gap-2
+                text-[9px]
+                font-black
+                uppercase
+                tracking-widest
+                text-emerald-400
+                transition-colors
+                hover:text-white
+              "
+            >
+              <FileCheck size={13} />
+              View Completion Letter
+              <ArrowUpRight size={12} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ============================================================
+   SC-500 ACTIVE TRACK
+   ============================================================ */
+
+const ActiveSecurityTrack = () => (
+  <section
+    className="
+      relative
+      mb-12
+      overflow-hidden
+      rounded-3xl
+      border
+      border-amber-500/15
+      bg-amber-500/[0.025]
+      p-6
+      md:p-7
+    "
+  >
+    <div
+      aria-hidden="true"
+      className="
+        pointer-events-none
+        absolute
+        right-[-50px]
+        top-[-60px]
+        h-48
+        w-48
+        rounded-full
+        bg-amber-500/[0.05]
+        blur-3xl
+      "
+    />
+
+    <div className="relative z-10 flex flex-col justify-between gap-5 md:flex-row md:items-center">
+      <div className="flex gap-4">
+        <div
+          className="
+            hidden
+            h-12
+            w-12
+            shrink-0
+            items-center
+            justify-center
+            rounded-xl
+            border
+            border-amber-400/20
+            bg-amber-500/10
+            sm:flex
+          "
+        >
+          <Cloud
+            size={23}
+            className="text-amber-400"
+          />
+        </div>
+
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-[0.25em] text-amber-400">
+            Active Professional Development
+          </p>
+
+          <h3 className="mt-2 text-xl font-black text-white">
+            Microsoft Cloud & AI Security
+          </h3>
+
+          <p className="mt-2 max-w-3xl text-xs leading-6 text-slate-500 md:text-sm">
+            SC-500 preparation and retake pathway
+            focused on securing cloud and AI
+            workloads, identity, data, AI services,
+            security operations, and enterprise
+            defense.
+          </p>
+        </div>
+      </div>
+
+      <StatusBadge
+        type="progress"
+        status="Retake Track"
+      />
+    </div>
+  </section>
+);
+
+/* ============================================================
+   VERIFIED PROFILES
+   ============================================================ */
+
+const VerifiedProfiles = () => (
+  <section
+    className="
+      mt-20
+      rounded-3xl
+      border
+      border-white/[0.07]
+      bg-white/[0.025]
+      p-6
+      md:p-7
+    "
+  >
+    <div className="mb-6 flex items-start gap-3">
+      <FileCheck
+        size={20}
+        className="mt-0.5 shrink-0 text-emerald-400"
+      />
+
+      <div>
+        <h4 className="text-sm font-black uppercase tracking-[0.16em] text-white">
+          Verified Profiles
+        </h4>
+
+        <p className="mt-2 text-xs leading-6 text-slate-600">
+          Cross-platform certification,
+          achievement, and hands-on security
+          learning verification sources.
+        </p>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+      {socialLinks.map((link) => (
+        <a
+          key={link.name}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            group
+            flex
+            items-center
+            justify-center
+            gap-2
+            rounded-xl
+            border
+            border-white/[0.06]
+            bg-[#0a0f1a]
+            p-4
+            text-center
+            text-[9px]
+            font-black
+            uppercase
+            tracking-[0.12em]
+            text-slate-500
+            transition-all
+            duration-300
+            hover:border-emerald-500/25
+            hover:bg-emerald-500/[0.07]
+            hover:text-emerald-400
+          "
+        >
+          {link.name}
+
+          <ExternalLink
+            size={11}
+            className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+          />
+        </a>
+      ))}
+    </div>
+  </section>
+);
+
+/* ============================================================
+   CREDENTIAL MODAL
+   ============================================================ */
+
+const CredentialModal = ({
+  cert,
+  onClose,
+}) => {
+  if (!cert) return null;
+
+  const Icon = cert.icon || Award;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="
+          fixed
+          inset-0
+          z-[100]
+          flex
+          items-center
+          justify-center
+          bg-black/80
+          p-2
+          backdrop-blur-xl
+          md:p-5
+        "
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+            scale: 0.94,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.94,
+            y: 20,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 180,
+            damping: 22,
+          }}
+          onClick={(event) =>
+            event.stopPropagation()
+          }
+          className="
+            relative
+            h-[92vh]
+            w-[96vw]
+            overflow-hidden
+            rounded-3xl
+            border
+            border-white/10
+            bg-[#050812]
+            shadow-[0_0_100px_rgba(16,185,129,0.12)]
+            md:w-[92vw]
+            lg:w-[1100px]
+          "
+        >
+          {/* Header */}
+          <div
+            className="
+              absolute
+              left-0
+              right-0
+              top-0
+              z-20
+              flex
+              items-center
+              justify-between
+              gap-4
+              border-b
+              border-white/10
+              bg-black/70
+              px-5
+              py-4
+              backdrop-blur-xl
+            "
+          >
+            <div className="min-w-0">
+              <h3 className="truncate text-sm font-black text-white md:text-lg">
+                {cert.title}
+              </h3>
+
+              <p className="mt-1 truncate text-xs text-slate-500">
+                {cert.org}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close credential preview"
+              className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-white/10
+                bg-white/[0.05]
+                text-white
+                transition
+                hover:border-emerald-500/30
+                hover:text-emerald-400
+              "
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* PDF */}
+          {cert.pdfUrl ? (
+            <>
+              <div className="h-full w-full bg-[#202020] pt-[72px]">
+                <iframe
+                  src={`${cert.pdfUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                  title={cert.title}
+                  className="h-full w-full border-0"
+                />
+              </div>
 
               <a
-                href="/certificates/Amal_Basnayake_HND_Completion_Letter.pdf"
-                download
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/[0.05] border border-white/10 text-slate-300 text-xs font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition"
+                href={cert.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  absolute
+                  bottom-5
+                  right-5
+                  z-30
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-xl
+                  bg-emerald-500
+                  px-4
+                  py-2.5
+                  text-[9px]
+                  font-black
+                  uppercase
+                  tracking-widest
+                  text-black
+                  shadow-[0_0_25px_rgba(16,185,129,0.25)]
+                  transition
+                  hover:scale-105
+                "
               >
-                <Download size={15} />
-                Download
+                Open Full Screen
+                <ExternalLink size={12} />
               </a>
-            </div>
-          </div>
-        </div>
-
-        {/* AZ-500 TRACK */}
-        <div className="mb-14 rounded-3xl bg-amber-500/[0.04] border border-amber-500/20 p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div>
-              <p className="text-amber-400 text-xs uppercase tracking-widest font-bold">
-                Active Certification Track
-              </p>
-              <h3 className="text-white text-xl font-bold mt-2">
-                Microsoft Azure Security Engineer Path (AZ-500)
-              </h3>
-              <p className="text-slate-400 text-sm mt-1">
-                Focused on Azure identity protection, threat defense, Microsoft
-                Sentinel, and secure cloud architecture.
-              </p>
-            </div>
-
-            <div className="min-w-[220px]">
-              <div className="flex justify-between text-xs mb-2">
-                <span className="text-slate-400">Preparation Progress</span>
-                <span className="text-amber-400 font-bold">Active</span>
-              </div>
-              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full w-[70%] bg-gradient-to-r from-amber-400 to-emerald-400" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* FILTERS */}
-        <div className="flex flex-wrap gap-3 mb-10">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
-                filter === cat
-                  ? "bg-emerald-500 text-black shadow-[0_0_20px_rgba(16,185,129,0.25)]"
-                  : "bg-white/[0.04] text-slate-400 hover:bg-white/10 hover:text-white"
-              }`}
+            </>
+          ) : (
+            /* Detail state */
+            <div
+              className="
+                flex
+                h-full
+                flex-col
+                items-center
+                justify-center
+                px-6
+                pt-20
+                text-center
+              "
             >
-              {cat}
-            </button>
-          ))}
+              <div
+                className="
+                  flex
+                  h-20
+                  w-20
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-emerald-500/20
+                  bg-emerald-500/10
+                "
+              >
+                <Icon
+                  size={34}
+                  className="text-emerald-400"
+                />
+              </div>
+
+              <div className="mt-6">
+                <StatusBadge
+                  type={cert.statusType}
+                  status={cert.status}
+                />
+              </div>
+
+              <h3 className="mt-5 max-w-2xl text-xl font-black text-white md:text-2xl">
+                {cert.title}
+              </h3>
+
+              <p className="mt-2 text-sm font-semibold text-emerald-400">
+                {cert.org}
+              </p>
+
+              <p className="mt-5 max-w-xl text-sm leading-7 text-slate-500">
+                {cert.description}
+              </p>
+
+              {cert.title.includes("BSc") && (
+                <div className="mt-6 flex items-center gap-2 text-xs font-bold text-blue-400">
+                  <GraduationCap size={16} />
+                  University of Wolverhampton
+                </div>
+              )}
+
+              {cert.title.includes("SC-500") && (
+                <div className="mt-6 flex items-center gap-2 rounded-xl border border-amber-500/15 bg-amber-500/[0.04] px-4 py-3 text-xs font-bold text-amber-400">
+                  <Cloud size={16} />
+                  Active Cloud & AI Security Track
+                </div>
+              )}
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+/* ============================================================
+   MAIN COMPONENT
+   ============================================================ */
+
+const Certifications = () => {
+  const [filter, setFilter] = useState("All");
+  const [selectedCert, setSelectedCert] =
+    useState(null);
+
+  /* ==========================================================
+     FILTERED DATA
+  ========================================================== */
+
+  const filteredCerts = useMemo(() => {
+    const list =
+      filter === "All"
+        ? certificationsList
+        : certificationsList.filter(
+            (cert) =>
+              cert.category === filter
+          );
+
+    return [...list].sort(
+      (a, b) => a.priority - b.priority
+    );
+  }, [filter]);
+
+  /* ==========================================================
+     METRICS
+  ========================================================== */
+
+  const featuredCount =
+    certificationsList.filter(
+      (cert) => cert.featured
+    ).length;
+
+  const verifiedCount =
+    certificationsList.filter(
+      (cert) =>
+        cert.statusType === "verified"
+    ).length;
+
+  const activeCount =
+    certificationsList.filter(
+      (cert) =>
+        cert.statusType === "progress"
+    ).length;
+
+  /* ==========================================================
+     RENDER
+  ========================================================== */
+
+  return (
+    <section
+      className="
+        relative
+        overflow-hidden
+        bg-[#030712]
+        px-[5%]
+        py-24
+        md:px-[8%]
+        lg:px-[10%]
+        lg:py-28
+      "
+    >
+      {/* ======================================================
+          BACKGROUND
+      ====================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.07),transparent_60%)]
+        "
+      />
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          right-[-150px]
+          top-[-150px]
+          h-[450px]
+          w-[450px]
+          rounded-full
+          bg-blue-500/[0.025]
+          blur-[120px]
+        "
+      />
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          bottom-[-150px]
+          left-[-150px]
+          h-[450px]
+          w-[450px]
+          rounded-full
+          bg-emerald-500/[0.025]
+          blur-[120px]
+        "
+      />
+
+      <div className="relative z-10 mx-auto max-w-[1600px]">
+        {/* ====================================================
+            HEADER
+        ==================================================== */}
+
+        <header className="mb-12">
+          <div className="mb-4 flex items-center gap-3">
+            <span
+              className="
+                h-2
+                w-2
+                animate-pulse
+                rounded-full
+                bg-emerald-400
+                shadow-[0_0_12px_rgba(52,211,153,0.8)]
+              "
+            />
+
+            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.35em] text-emerald-400">
+              Professional Credential Intelligence
+            </p>
+          </div>
+
+          <h2
+            className="
+              text-4xl
+              font-black
+              uppercase
+              italic
+              leading-none
+              tracking-[-0.04em]
+              text-white
+              sm:text-5xl
+              md:text-7xl
+            "
+          >
+            Certifications
+            <span
+              className="
+                text-transparent
+                bg-clip-text
+                bg-gradient-to-r
+                from-emerald-400
+                via-cyan-400
+                to-blue-500
+              "
+            >
+              .
+            </span>
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-sm leading-7 text-slate-500 md:text-base">
+            A structured view of academic progression,
+            cloud and AI security development,
+            governance credentials, defensive
+            security training, networking foundation,
+            and offensive security development.
+          </p>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {[
+              ["Cybersecurity", "emerald"],
+              ["Cloud Security", "blue"],
+              ["Security Engineering", "cyan"],
+              ["Continuous Learning", "purple"],
+            ].map(([label]) => (
+              <span
+                key={label}
+                className="
+                  rounded-full
+                  border
+                  border-white/[0.07]
+                  bg-white/[0.025]
+                  px-3
+                  py-1.5
+                  text-[8px]
+                  font-mono
+                  uppercase
+                  tracking-[0.15em]
+                  text-slate-500
+                "
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        {/* ====================================================
+            METRICS
+        ==================================================== */}
+
+        <div className="mb-12 grid gap-4 md:grid-cols-3">
+          <MetricCard
+            label="Featured Credentials"
+            value={featuredCount}
+            icon={Award}
+          />
+
+          <MetricCard
+            label="Verified Records"
+            value={verifiedCount}
+            icon={ShieldCheck}
+            accent="blue"
+          />
+
+          <MetricCard
+            label="Active Development"
+            value={activeCount}
+            icon={Cloud}
+            accent="amber"
+          />
         </div>
 
-        {/* CERTIFICATION CARDS */}
+        {/* ====================================================
+            ACADEMIC PATH
+        ==================================================== */}
+
+        <AcademicProgression
+          onSelect={setSelectedCert}
+        />
+
+        {/* ====================================================
+            ACTIVE SECURITY PATH
+        ==================================================== */}
+
+        <ActiveSecurityTrack />
+
+        {/* ====================================================
+            FILTER BAR
+        ==================================================== */}
+
+        <div className="mb-10">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-[8px] font-mono font-bold uppercase tracking-[0.25em] text-slate-700">
+              Credential Domains
+            </span>
+
+            <span className="h-px flex-1 bg-white/[0.05]" />
+          </div>
+
+          <div
+            className="
+              flex
+              flex-wrap
+              gap-2
+            "
+          >
+            {categories.map((category) => {
+              const active =
+                filter === category;
+
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() =>
+                    setFilter(category)
+                  }
+                  aria-pressed={active}
+                  className={`
+                    rounded-xl
+                    border
+                    px-4
+                    py-2.5
+                    text-[9px]
+                    font-black
+                    uppercase
+                    tracking-[0.14em]
+                    transition-all
+                    duration-300
+                    focus:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-emerald-400
+                    ${
+                      active
+                        ? "border-emerald-400/40 bg-emerald-500 text-black shadow-[0_0_25px_rgba(16,185,129,0.18)]"
+                        : "border-white/[0.07] bg-white/[0.025] text-slate-500 hover:border-white/15 hover:bg-white/[0.05] hover:text-white"
+                    }
+                  `}
+                >
+                  {category}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ====================================================
+            CREDENTIAL GRID
+        ==================================================== */}
+
         <motion.div
           layout
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr"
+          className="
+            grid
+            auto-rows-fr
+            gap-6
+            md:grid-cols-2
+            xl:grid-cols-3
+          "
         >
           <AnimatePresence mode="popLayout">
-            {filteredCerts.map((cert) => (
-              <motion.div
-                key={cert.title}
-                layout
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 18 }}
-                transition={{ duration: 0.25 }}
-                className="group h-full rounded-3xl border border-white/10 bg-[#08111d]/80 hover:border-emerald-500/30 transition overflow-hidden"
-              >
-                <div className="p-5 h-full min-h-[430px] flex flex-col">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedCert(cert)}
-                    className="relative h-36 rounded-2xl bg-white overflow-hidden border border-white/10 flex items-center justify-center"
-                  >
-                    <img
-                      src={cert.image}
-                      alt={cert.title}
-                      className="w-full h-full object-contain p-2 transition duration-500 group-hover:scale-105"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-
-                    <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                      <span className="text-white text-[10px] font-black uppercase tracking-widest bg-emerald-500/25 border border-emerald-400/30 px-4 py-2 rounded-xl">
-                        Preview
-                      </span>
-                    </div>
-                  </button>
-
-                  <div className="mt-5">
-                    <div
-                      className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-full border uppercase tracking-widest ${
-                        statusStyle[cert.statusType]
-                      }`}
-                    >
-                      {statusIcon[cert.statusType]}
-                      {cert.status}
-                    </div>
-
-                    <h3 className="text-white text-lg font-bold mt-4 leading-snug min-h-[52px] group-hover:text-emerald-400 transition">
-                      {cert.title}
-                    </h3>
-
-                    <p className="text-slate-400 text-sm mt-1">{cert.org}</p>
-
-                    <p className="text-slate-500 text-xs mt-3 min-h-[36px]">
-                      {cert.description}
-                    </p>
-                  </div>
-
-                  <div className="mt-auto pt-6 grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCert(cert)}
-                      className="py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/20 transition"
-                    >
-                      {cert.pdfUrl ? "Preview" : "Status"}
-                    </button>
-
-                    <a
-                      href={cert.pdfUrl || socialLinks[0].url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-3 rounded-xl bg-white/[0.04] border border-white/10 text-slate-300 text-[10px] font-black uppercase tracking-widest hover:text-white hover:bg-white/10 transition flex items-center justify-center gap-1"
-                    >
-                      {cert.pdfUrl ? "Open" : "Path"}{" "}
-                      <ExternalLink size={12} />
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+            {filteredCerts.map(
+              (cert, index) => (
+                <CredentialCard
+                  key={cert.title}
+                  cert={cert}
+                  index={index}
+                  onSelect={setSelectedCert}
+                />
+              )
+            )}
           </AnimatePresence>
         </motion.div>
 
-        {/* VERIFIED LINKS */}
-        <div className="mt-20 rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
-            <div>
-              <h4 className="text-white font-bold uppercase tracking-widest text-sm">
-                Verified Profiles
-              </h4>
-              <p className="text-slate-500 text-xs mt-1">
-                Cross-platform certification and lab verification sources.
-              </p>
-            </div>
-            <FileCheck className="text-emerald-400" />
-          </div>
+        {/* ====================================================
+            EMPTY FILTER STATE
+        ==================================================== */}
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {socialLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 p-4 rounded-xl bg-[#0a0f1a] border border-white/5 hover:border-emerald-500/30 hover:bg-emerald-500/10 text-slate-400 hover:text-emerald-400 text-xs font-bold uppercase tracking-widest transition"
-              >
-                {link.name} <ExternalLink size={12} />
-              </a>
-            ))}
+        {filteredCerts.length === 0 && (
+          <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] px-6 py-16 text-center">
+            <Shield
+              size={32}
+              className="mx-auto text-slate-700"
+            />
+
+            <p className="mt-4 text-sm font-black uppercase tracking-widest text-slate-500">
+              No credentials in this domain
+            </p>
           </div>
+        )}
+
+        {/* ====================================================
+            VERIFIED PROFILES
+        ==================================================== */}
+
+        <VerifiedProfiles />
+
+        {/* ====================================================
+            FOOTER SIGNAL
+        ==================================================== */}
+
+        <div className="mt-14 flex items-center justify-center gap-4">
+          <span className="h-px w-10 bg-slate-800 md:w-20" />
+
+          <span className="text-[7px] font-mono font-bold uppercase tracking-[0.3em] text-slate-700">
+            Learn • Build • Validate • Engineer
+          </span>
+
+          <span className="h-px w-10 bg-slate-800 md:w-20" />
         </div>
-
-        {/* MODAL */}
-        <AnimatePresence>
-          {selectedCert && (
-            <motion.div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xl p-2 md:p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedCert(null)}
-            >
-              <motion.div
-                initial={{ scale: 0.92, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.92, opacity: 0, y: 20 }}
-                transition={{ type: "spring", stiffness: 180, damping: 22 }}
-                onClick={(e) => e.stopPropagation()}
-                className="relative w-[96vw] h-[90vh] md:h-[92vh] bg-[#050812] border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(16,185,129,0.16)]"
-              >
-                <div className="absolute top-0 left-0 right-0 z-20 px-5 py-4 bg-black/70 backdrop-blur-xl border-b border-white/10 flex items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-white font-bold text-sm md:text-lg">
-                      {selectedCert.title}
-                    </h3>
-                    <p className="text-slate-400 text-xs">
-                      {selectedCert.org}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setSelectedCert(null)}
-                    className="text-white hover:text-emerald-400 bg-white/5 border border-white/10 rounded-full p-2"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-
-                {selectedCert.pdfUrl ? (
-                  <>
-                    <div className="w-full h-full pt-[76px] bg-[#2b2b2b]">
-                      <iframe
-                        src={`${selectedCert.pdfUrl}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
-                        className="w-full h-full border-0"
-                        title={selectedCert.title}
-                      />
-                    </div>
-
-                    <a
-                      href={selectedCert.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute bottom-5 right-5 z-20 bg-emerald-500 px-4 py-2 text-xs font-bold rounded-xl text-black hover:scale-105 transition shadow-[0_0_20px_rgba(16,185,129,0.35)]"
-                    >
-                      Open Full Screen
-                    </a>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-white text-center px-6">
-                    <div
-                      className={`inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border uppercase tracking-widest ${
-                        statusStyle[selectedCert.statusType]
-                      }`}
-                    >
-                      {statusIcon[selectedCert.statusType]}
-                      {selectedCert.status}
-                    </div>
-
-                    <h3 className="text-xl font-bold mt-5 mb-3">
-                      {selectedCert.title}
-                    </h3>
-                    <p className="text-slate-400 max-w-md">
-                      {selectedCert.description}
-                    </p>
-                  </div>
-                )}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+      {/* ======================================================
+          MODAL
+      ====================================================== */}
+
+      {selectedCert && (
+        <CredentialModal
+          cert={selectedCert}
+          onClose={() =>
+            setSelectedCert(null)
+          }
+        />
+      )}
     </section>
   );
 };

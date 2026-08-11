@@ -12,359 +12,178 @@ import {
   ExternalLink,
   Network,
   Activity,
+  LockKeyhole,
+  CheckCircle2,
+  ArrowUpRight,
+  Layers3,
+  Radar,
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070";
+const FALLBACK_STACK = ["Azure", "Security", "SIEM", "Security Lab"];
+
+const normalizeText = (value) =>
+  typeof value === "string" ? value.trim() : "";
+
+const parseList = (value) => {
+  if (Array.isArray(value)) return value.map(normalizeText).filter(Boolean);
+  return normalizeText(value).split(",").map((item) => item.trim()).filter(Boolean);
+};
+
+const getProjectValue = (project, keys, fallback = "") => {
+  for (const key of keys) {
+    const value = project?.[key];
+    if (value !== undefined && value !== null && normalizeText(String(value))) return value;
+  }
+  return fallback;
+};
 
 const ProjectDetails = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const { scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 1.05]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.86]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.35], [1, 1.045]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0.82]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    AOS.init({ duration: 900, once: true });
-    fetchProjectDetails();
+    AOS.init({ duration: 850, once: true, offset: 60, easing: "ease-out-cubic" });
   }, [id]);
 
-  const fetchProjectDetails = async () => {
-    setLoading(true);
+  useEffect(() => {
+    let active = true;
+    const fetchProjectDetails = async () => {
+      setLoading(true);
+      try {
+        const parsedId = Number.parseInt(id, 10);
+        if (Number.isNaN(parsedId)) throw new Error("Invalid project id");
+        const { data, error } = await supabase.from("projects").select("*").eq("id", parsedId).single();
+        if (error) throw error;
+        if (active) setProject(data);
+      } catch (err) {
+        console.error("Error fetching project:", err);
+        if (active) setProject(null);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    fetchProjectDetails();
+    return () => { active = false; };
+  }, [id]);
 
-    try {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .eq("id", parseInt(id))
-        .single();
-
-      if (error) throw error;
-      setProject(data);
-    } catch (err) {
-      console.error("Error fetching project:", err);
-      setProject(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const techStack = useMemo(() => {
-    if (!project) return ["Azure", "SIEM", "KQL", "Security Lab"];
-
-    const rawStack =
-      project.TechStack ||
-      project.tech_stack ||
-      project.Stack ||
-      project.stack ||
-      "";
-
-    const parsedStack = rawStack
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-
-    return parsedStack.length
-      ? parsedStack
-      : ["Azure", "SIEM", "KQL", "Security Lab"];
-  }, [project]);
-
-  const projectImage = project?.Img || project?.image || fallbackImage;
-  const projectLink = project?.Link || project?.link || "";
+  const title = normalizeText(project?.Title) || "Cybersecurity Project";
+  const description = normalizeText(project?.Description) ||
+    "Hands-on security engineering lab focused on practical implementation, validation, monitoring, and defensive controls.";
+  const category = normalizeText(project?.category) || "Cybersecurity Engineering";
+  const projectImage = getProjectValue(project, ["Img", "image", "Image"], fallbackImage) || fallbackImage;
+  const projectLink = normalizeText(getProjectValue(project, ["Link", "link"], ""));
   const hasProjectLink = Boolean(projectLink);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#030712] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]" />
-      </div>
-    );
-  }
+  const techStack = useMemo(() => {
+    if (!project) return FALLBACK_STACK;
+    const rawStack = getProjectValue(project, ["TechStack", "tech_stack", "Stack", "stack"], "");
+    const parsed = parseList(rawStack);
+    return parsed.length ? parsed : FALLBACK_STACK;
+  }, [project]);
 
-  if (!project) {
-    return (
-      <div className="min-h-screen bg-[#030712] text-white flex flex-col items-center justify-center p-6 text-center">
-        <h1 className="text-2xl font-black italic tracking-widest text-red-500 uppercase mb-4">
-          Access Denied: Lab Not Found
-        </h1>
+  const engineeringFocus = useMemo(() => parseList(getProjectValue(project, ["EngineeringFocus", "engineering_focus", "Focus", "focus"], "")), [project]);
+  const securityControls = useMemo(() => parseList(getProjectValue(project, ["SecurityControls", "security_controls", "Controls", "controls"], "")), [project]);
+  const outcomes = useMemo(() => parseList(getProjectValue(project, ["SecurityOutcome", "security_outcome", "Outcome", "outcome"], "")), [project]);
 
-        <Link
-          to="/"
-          className="text-emerald-400 hover:text-white transition-all underline underline-offset-8"
-        >
-          Return to Command Center
-        </Link>
-      </div>
-    );
-  }
+  const objective = normalizeText(getProjectValue(project, ["SecurityObjective", "security_objective", "Objective", "objective"], "")) ||
+    "Demonstrate a practical security engineering approach through secure design, implementation, monitoring, and validation.";
+  const architectureText = normalizeText(getProjectValue(project, ["Architecture", "architecture", "ArchitectureDescription", "architecture_description"], "")) ||
+    "The lab is structured around practical security controls, clear trust boundaries, controlled access, monitoring visibility, and repeatable validation.";
+  const labType = normalizeText(getProjectValue(project, ["ProjectType", "project_type", "Type", "type"], "")) || "Hands-on Cybersecurity Lab";
+  const status = normalizeText(getProjectValue(project, ["Status", "status"], "")) || "Lab Verified";
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-5"><div className="h-12 w-12 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" /><span className="text-[9px] font-mono uppercase tracking-[0.3em] text-slate-600">Loading Security Lab</span></div>
+    </div>
+  );
+
+  if (!project) return (
+    <div className="min-h-screen bg-[#030712] text-white flex flex-col items-center justify-center p-6 text-center">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/5"><ShieldAlert className="h-7 w-7 text-red-400" /></div>
+      <h1 className="text-2xl font-black italic tracking-widest text-red-400 uppercase mb-4">Access Denied: Lab Not Found</h1>
+      <p className="max-w-md text-sm leading-6 text-slate-600 mb-8">The requested security lab could not be loaded from the project registry.</p>
+      <Link to="/" className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-3 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-400 transition hover:bg-emerald-500 hover:text-black"><ArrowLeft size={14} />Return to Command Center</Link>
+    </div>
+  );
 
   return (
-    <div className="bg-[#030712] text-white min-h-screen font-sans selection:bg-emerald-500/30">
-      <nav className="fixed top-0 w-full z-50 px-[5%] py-6 backdrop-blur-md bg-[#030712]/75 border-b border-white/5">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link
-            to="/"
-            className="group inline-flex items-center gap-2 text-gray-400 hover:text-white transition-all"
-          >
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">
-              Back to Portfolio
-            </span>
-          </Link>
-
-          <div className="hidden md:block text-emerald-500/50 text-[9px] font-mono tracking-widest uppercase">
-            System_Status: Secure_Connection_Established
-          </div>
+    <div className="min-h-screen overflow-hidden bg-[#030712] font-sans text-white selection:bg-emerald-500/30">
+      <nav className="fixed top-0 z-50 w-full border-b border-white/[0.05] bg-[#030712]/75 px-[5%] py-5 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <Link to="/" className="group inline-flex items-center gap-3 text-slate-500 transition hover:text-white"><span className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.025] transition group-hover:border-emerald-500/20 group-hover:bg-emerald-500/10"><ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /></span><span className="text-[9px] font-black uppercase tracking-[0.25em]">Back to Portfolio</span></Link>
+          <div className="hidden items-center gap-3 md:flex"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /><span className="text-[8px] font-mono font-bold uppercase tracking-[0.25em] text-emerald-500/60">Secure Connection</span></div>
         </div>
       </nav>
 
-      <section className="relative min-h-[82vh] flex items-center justify-center overflow-hidden pt-28 pb-20">
-        <motion.div style={{ scale, opacity }} className="absolute inset-0">
-          <img
-            src={projectImage}
-            alt={project.Title || "Cybersecurity Project"}
-            className="w-full h-full object-cover object-center"
-            onError={(e) => {
-              e.currentTarget.src = fallbackImage;
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#030712]/70 via-[#030712]/88 to-[#030712]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(16,185,129,0.14),transparent_35%)]" />
+      <section className="relative min-h-[82vh] overflow-hidden pt-28 pb-16">
+        <motion.div style={{ scale: heroScale, opacity: heroOpacity }} className="absolute inset-0">
+          <img src={projectImage} alt={title} className="h-full w-full object-cover object-center" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = fallbackImage; }} />
+          <div className="absolute inset-0 bg-[#030712]/70" /><div className="absolute inset-0 bg-gradient-to-b from-[#030712]/65 via-[#030712]/80 to-[#030712]" /><div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" /><div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(16,185,129,0.13),transparent_34%)]" />
         </motion.div>
-
-        <div
-          className="relative text-center z-10 px-6 max-w-5xl py-10"
-          data-aos="zoom-out"
-        >
-          <span className="px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.4em] mb-8 inline-block shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-            {project.category || "Cybersecurity Engineering"}
-          </span>
-
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent italic uppercase leading-[1.05] drop-shadow-2xl">
-            {project.Title}
-          </h1>
-
-          <p className="text-gray-300 mt-4 max-w-2xl mx-auto text-base md:text-xl leading-relaxed font-light">
-            {project.Description}
-          </p>
-
-          <div className="relative z-20 flex flex-wrap justify-center gap-4 mt-10 pb-8">
-            {hasProjectLink ? (
-              <a
-                href={projectLink}
-                target="_blank"
-                rel="noreferrer"
-                className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-white text-black font-black hover:bg-emerald-400 hover:scale-105 transition-all active:scale-95 shadow-2xl uppercase tracking-[0.2em] text-[11px]"
-              >
-                <Github className="w-5 h-5" />
-                View Repository
-              </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-white/10 text-gray-500 font-black cursor-not-allowed uppercase tracking-[0.2em] text-[11px]"
-              >
-                <Github className="w-5 h-5" />
-                Repository Coming Soon
-              </button>
-            )}
-
-            <Link
-              to="/"
-              className="relative z-20 inline-flex items-center gap-3 px-10 md:px-12 py-4 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black hover:bg-emerald-500 hover:text-black hover:scale-105 transition-all active:scale-95 uppercase tracking-[0.2em] text-[11px]"
-            >
-              <ExternalLink className="w-5 h-5" />
-              More Labs
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <div className="max-w-7xl mx-auto px-[5%] pt-16 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-          <div className="lg:col-span-2 space-y-16">
-            <section data-aos="fade-up">
-              <div className="flex items-center gap-4 mb-10">
-                <div className="h-[1px] flex-grow bg-white/10" />
-                <h2 className="text-2xl font-bold italic uppercase tracking-tighter flex items-center gap-3">
-                  <ShieldAlert className="text-emerald-400 w-6 h-6" />
-                  Lab Documentation
-                </h2>
-                <div className="h-[1px] flex-grow bg-white/10" />
-              </div>
-
-              <div className="group relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-white/[0.02] p-4 transition-all hover:border-emerald-500/20 shadow-2xl shadow-emerald-500/5">
-                <img
-                  src={projectImage}
-                  alt="Lab Preview"
-                  className="w-full aspect-[16/9] object-cover object-center rounded-[1.8rem] transition-transform duration-700 group-hover:scale-[1.01]"
-                  onError={(e) => {
-                    e.currentTarget.src = fallbackImage;
-                  }}
-                />
-              </div>
-            </section>
-
-            <section
-              data-aos="fade-up"
-              className="bg-white/[0.01] border border-white/5 rounded-[2.5rem] p-8 md:p-16"
-            >
-              <h3 className="text-3xl font-black italic uppercase tracking-tighter mb-8 flex items-center gap-4">
-                <Server className="text-blue-500" />
-                Infrastructure Setup
-              </h3>
-
-              <p className="text-gray-400 leading-relaxed text-lg font-light mb-10">
-                Detailed analysis of the lab deployment, including cloud
-                networking, identity security, monitoring, detection logic, and
-                automation workflows used to build this cybersecurity
-                environment.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-mono">
-                <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
-                  <h4 className="text-emerald-500 font-bold uppercase text-[10px] tracking-widest mb-2">
-                    Core Tools
-                  </h4>
-                  <p className="text-xs text-gray-400 tracking-tight">
-                    Microsoft Sentinel, KQL, Azure Logic Apps, Sysmon
-                  </p>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5">
-                  <h4 className="text-emerald-500 font-bold uppercase text-[10px] tracking-widest mb-2">
-                    Engineering Focus
-                  </h4>
-                  <p className="text-xs text-gray-400 tracking-tight">
-                    Threat Detection, Cloud Security, SIEM, Identity Protection
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            <section
-              data-aos="fade-up"
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <div className="rounded-[2rem] border border-white/10 bg-white/[0.02] p-8">
-                <Network className="text-emerald-400 mb-5" />
-                <h4 className="text-white font-black uppercase tracking-widest text-sm mb-3">
-                  Architecture Focus
-                </h4>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Built to demonstrate secure design principles, network
-                  segmentation, monitoring visibility, and practical security
-                  engineering workflows.
-                </p>
-              </div>
-
-              <div className="rounded-[2rem] border border-white/10 bg-white/[0.02] p-8">
-                <Activity className="text-blue-400 mb-5" />
-                <h4 className="text-white font-black uppercase tracking-widest text-sm mb-3">
-                  Detection Outcome
-                </h4>
-                <p className="text-slate-400 text-sm leading-relaxed">
-                  Focused on improving visibility, reducing attack surface, and
-                  validating security controls through hands-on implementation.
-                </p>
-              </div>
-            </section>
-          </div>
-
-          <aside className="space-y-8">
-            <div
-              className="p-8 md:p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/10 backdrop-blur-sm sticky top-32"
-              data-aos="fade-left"
-            >
-              <h3 className="text-lg font-bold mb-10 flex items-center gap-3 italic uppercase tracking-[0.2em]">
-                <Zap className="text-yellow-400 w-5 h-5 fill-yellow-400/20" />
-                Lab Metadata
-              </h3>
-
-              <div className="space-y-8">
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-black mb-2">
-                    Classification
-                  </p>
-                  <p className="text-gray-300 font-medium text-lg leading-tight">
-                    {project.category || "General Security"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-black mb-2">
-                    Status
-                  </p>
-                  <div className="flex items-center gap-2 text-gray-300 font-medium">
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                    Lab Verified
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-black mb-2">
-                    Project Type
-                  </p>
-                  <p className="text-gray-300 font-medium">
-                    Hands-on Cybersecurity Lab
-                  </p>
-                </div>
-
-                <div className="pt-8 border-t border-white/5">
-                  <p className="text-[10px] uppercase tracking-widest text-emerald-500 font-black mb-4">
-                    Tech Stack
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {techStack.map((t) => (
-                      <span
-                        key={t}
-                        className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-[9px] font-mono text-gray-400 uppercase tracking-tighter"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {hasProjectLink && (
-                  <a
-                    href={projectLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-emerald-500 text-black font-black hover:bg-white hover:scale-[1.02] transition-all uppercase tracking-[0.18em] text-[10px]"
-                  >
-                    <Github className="w-4 h-4" />
-                    Open GitHub Repo
-                  </a>
-                )}
-              </div>
+        <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-5xl items-center justify-center px-6 text-center" data-aos="zoom-out">
+          <div className="w-full">
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/[0.08] px-4 py-2"><ShieldCheck size={13} className="text-emerald-400" /><span className="text-[8px] font-black uppercase tracking-[0.3em] text-emerald-400">{category}</span></div>
+            <h1 className="text-4xl font-black uppercase italic leading-[0.95] tracking-[-0.04em] text-white drop-shadow-2xl sm:text-5xl md:text-7xl lg:text-8xl">{title}</h1>
+            <p className="mx-auto mt-7 max-w-3xl text-sm leading-7 text-slate-300/90 md:text-lg">{description}</p>
+            <div className="mt-9 flex flex-wrap justify-center gap-3">{techStack.slice(0, 8).map((tech) => <span key={tech} className="rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-[8px] font-mono font-bold uppercase tracking-[0.12em] text-slate-300">{tech}</span>)}</div>
+            <div className="relative z-20 mt-10 flex flex-wrap justify-center gap-3">
+              {hasProjectLink ? <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-black shadow-2xl transition hover:scale-[1.03] hover:bg-emerald-400 active:scale-95"><Github className="h-4 w-4" />View Repository</a> : <span className="inline-flex cursor-not-allowed items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] px-8 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-600"><Github className="h-4 w-4" />Repository Coming Soon</span>}
+              <Link to="/" className="inline-flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] px-8 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-400 transition hover:scale-[1.03] hover:bg-emerald-500 hover:text-black active:scale-95"><Layers3 className="h-4 w-4" />Explore More Labs</Link>
             </div>
-          </aside>
+          </div>
         </div>
-      </div>
-
-      <section className="py-24 text-center border-t border-white/5 bg-gradient-to-b from-transparent to-emerald-500/[0.01]">
-        <h2 className="text-2xl font-black italic uppercase tracking-tighter opacity-20 mb-10">
-          End of Laboratory Transmission
-        </h2>
-
-        <Link
-          to="/"
-          className="inline-flex items-center gap-4 px-12 py-5 bg-emerald-500 text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-full hover:bg-white hover:scale-105 transition-all duration-500 shadow-2xl shadow-emerald-500/20"
-        >
-          Return to Lab Dashboard <Zap className="fill-black w-4 h-4" />
-        </Link>
       </section>
+
+      <main className="mx-auto max-w-7xl px-[5%] pt-16 pb-24">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-16">
+          <div className="min-w-0 space-y-16">
+            <section data-aos="fade-up"><SectionHeading icon={ShieldAlert} eyebrow="01 / Security Objective" title="Why This Lab Exists" /><div className="rounded-[2rem] border border-emerald-500/10 bg-emerald-500/[0.025] p-7 md:p-10"><div className="flex gap-5"><div className="mt-1 hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-500/15 bg-emerald-500/[0.06] sm:flex"><LockKeyhole className="h-5 w-5 text-emerald-400" /></div><p className="text-base leading-8 text-slate-400 md:text-lg">{objective}</p></div></div></section>
+
+            <section data-aos="fade-up"><SectionHeading icon={Radar} eyebrow="02 / Lab Evidence" title="Architecture & Lab View" /><div className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.02] p-3 shadow-2xl shadow-emerald-500/[0.03]"><div className="relative aspect-[16/9] overflow-hidden rounded-[1.5rem] bg-[#050b14]"><img src={projectImage} alt={`${title} architecture`} className="h-full w-full object-contain object-center transition-transform duration-700 group-hover:scale-[1.015]" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = fallbackImage; }} /><div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" /><div className="absolute bottom-4 left-4 rounded-xl border border-white/10 bg-black/55 px-3 py-2 backdrop-blur-md"><span className="text-[7px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">Lab Evidence / 16:9</span></div></div></div></section>
+
+            <section data-aos="fade-up"><SectionHeading icon={Server} eyebrow="03 / Engineering Design" title="Architecture & Implementation" /><div className="rounded-[2rem] border border-white/[0.07] bg-white/[0.015] p-7 md:p-10"><p className="text-base leading-8 text-slate-400 md:text-lg">{architectureText}</p><div className="mt-9 grid grid-cols-1 gap-4 md:grid-cols-2"><InfoCard icon={Network} title="Engineering Focus" items={engineeringFocus.length ? engineeringFocus : ["Secure architecture", "Identity & access controls", "Network segmentation", "Security visibility"]} /><InfoCard icon={ShieldCheck} title="Security Controls" items={securityControls.length ? securityControls : ["Preventive controls", "Least privilege", "Monitoring", "Validation"]} /></div></div></section>
+
+            <section data-aos="fade-up"><SectionHeading icon={Activity} eyebrow="04 / Security Validation" title="Engineering Outcome" /><div className="grid grid-cols-1 gap-4 md:grid-cols-2"><OutcomeCard title="Security Outcome" icon={CheckCircle2} items={outcomes.length ? outcomes : ["Validated security controls", "Improved security visibility", "Reduced exposed attack surface", "Practical implementation evidence"]} /><OutcomeCard title="Practical Value" icon={Zap} items={["Hands-on engineering experience", "Repeatable security workflow", "Cloud and enterprise alignment", "Portfolio-ready technical evidence"]} /></div></section>
+          </div>
+
+          <aside className="min-w-0"><div className="lg:sticky lg:top-28" data-aos="fade-left"><div className="overflow-hidden rounded-[2rem] border border-white/[0.07] bg-white/[0.02] backdrop-blur-xl"><div className="border-b border-white/[0.05] p-7"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/15 bg-emerald-500/[0.06]"><Zap className="h-4 w-4 text-yellow-400" /></div><div><p className="text-[8px] font-black uppercase tracking-[0.25em] text-emerald-400">Lab Metadata</p><p className="mt-1 text-[10px] text-slate-600">Security Engineering Record</p></div></div></div>
+            <div className="space-y-7 p-7"><MetaItem label="Classification" value={category} /><MetaItem label="Status" value={<span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />{status}</span>} /><MetaItem label="Project Type" value={labType} />
+              <div className="border-t border-white/[0.05] pt-7"><p className="mb-4 text-[8px] font-black uppercase tracking-[0.22em] text-emerald-500">Technology Stack</p><div className="flex flex-wrap gap-2">{techStack.map((tech) => <span key={tech} className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-1.5 text-[8px] font-mono font-bold uppercase tracking-[0.08em] text-slate-400">{tech}</span>)}</div></div>
+              <div className="border-t border-white/[0.05] pt-7"><div className="flex items-center gap-3"><ShieldCheck className="h-4 w-4 text-emerald-400" /><div><p className="text-[8px] font-black uppercase tracking-[0.18em] text-slate-600">Engineering Standard</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-300">Design • Implement • Validate</p></div></div></div>
+              {hasProjectLink && <a href={projectLink} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-emerald-500 px-6 py-4 text-[9px] font-black uppercase tracking-[0.18em] text-black transition hover:bg-white hover:scale-[1.02]"><Github className="h-4 w-4" />Open GitHub Repository<ArrowUpRight className="h-3.5 w-3.5" /></a>}
+            </div></div></div></aside>
+        </div>
+      </main>
+
+      <section className="border-t border-white/[0.05] bg-gradient-to-b from-transparent to-emerald-500/[0.015] px-6 py-24 text-center"><p className="text-[8px] font-mono font-bold uppercase tracking-[0.3em] text-slate-700">Security Engineering Portfolio</p><h2 className="mt-4 text-2xl font-black uppercase italic tracking-tight text-slate-300 md:text-3xl">Explore the Next Security Lab</h2><p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-600">Continue through the lab archive to explore additional cloud, identity, SIEM, AI security, network security, and threat detection implementations.</p><Link to="/" className="mt-9 inline-flex items-center gap-3 rounded-full bg-emerald-500 px-9 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-black transition hover:scale-105 hover:bg-white">Return to Lab Dashboard<Zap className="h-4 w-4 fill-current" /></Link></section>
     </div>
   );
 };
+
+const SectionHeading = ({ icon: Icon, eyebrow, title }) => (
+  <div className="mb-8"><div className="mb-3 flex items-center gap-3"><Icon className="h-4 w-4 text-emerald-400" /><span className="text-[8px] font-mono font-bold uppercase tracking-[0.28em] text-emerald-500/70">{eyebrow}</span></div><div className="flex items-center gap-5"><h2 className="shrink-0 text-2xl font-black uppercase italic tracking-[-0.03em] text-white md:text-3xl">{title}</h2><div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" /></div></div>
+);
+
+const InfoCard = ({ icon: Icon, title, items }) => (
+  <div className="h-full rounded-2xl border border-white/[0.06] bg-white/[0.025] p-6"><div className="mb-5 flex items-center gap-3"><div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/10 bg-emerald-500/[0.05]"><Icon className="h-4 w-4 text-emerald-400" /></div><h3 className="text-[10px] font-black uppercase tracking-[0.16em] text-white">{title}</h3></div><div className="space-y-3">{items.map((item, index) => <div key={`${item}-${index}`} className="flex items-start gap-3 text-xs leading-5 text-slate-500"><CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500/70" /><span>{item}</span></div>)}</div></div>
+);
+
+const OutcomeCard = ({ icon: Icon, title, items }) => (
+  <div className="h-full rounded-2xl border border-white/[0.06] bg-white/[0.02] p-7 transition hover:border-emerald-500/15"><div className="mb-5 flex items-center gap-3"><Icon className="h-5 w-5 text-emerald-400" /><h3 className="text-[10px] font-black uppercase tracking-[0.18em] text-white">{title}</h3></div><div className="space-y-3">{items.map((item, index) => <div key={`${item}-${index}`} className="flex items-start gap-3 text-sm leading-6 text-slate-500"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400/70" /><span>{item}</span></div>)}</div></div>
+);
+
+const MetaItem = ({ label, value }) => (
+  <div><p className="mb-2 text-[8px] font-black uppercase tracking-[0.2em] text-emerald-500">{label}</p><div className="text-sm font-medium leading-6 text-slate-300">{value}</div></div>
+);
 
 export default ProjectDetails;
