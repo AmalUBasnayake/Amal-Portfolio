@@ -4,45 +4,65 @@ import { motion } from "framer-motion";
 import ParticlesBg from "./ParticlesBg";
 import { Cloud, ShieldCheck, Activity, Network } from "lucide-react";
 
-const skills = [
-  { name: "Azure", icon: "/icons/azure.svg", category: "Cloud" },
+ const skills = [
+  {
+    name: "Azure",
+    icon: "/icons/Azure.png",
+    category: "Cloud",
+  },
   {
     name: "Microsoft Sentinel",
-    icon: "/icons/sentinel.svg",
+    icon: "/icons/sentinel.png",
     category: "SOC",
   },
-  { name: "Splunk", icon: "/icons/splunk.svg", category: "SOC" },
-  { name: "Kali Linux", icon: "/icons/kali.svg", category: "Offensive" },
-  { name: "Python", icon: "/icons/python.svg", category: "Automation" },
-  { name: "Linux", icon: "/icons/linux.svg", category: "Systems" },
+  {
+    name: "Splunk",
+    icon: "/icons/splunk.png",
+    category: "SOC",
+  },
+  {
+    name: "Kali Linux",
+    icon: "/icons/kali.png",
+    category: "Offensive",
+  },
+  {
+    name: "Python",
+    icon: "/icons/python.png",
+    category: "Automation",
+  },
+  {
+    name: "Linux",
+    icon: "/icons/linux.png",
+    category: "Systems",
+  },
   {
     name: "Active Directory",
-    icon: "/icons/ad.svg",
+    icon: "/icons/active-directory.png",
     category: "Identity",
   },
   {
     name: "Wireshark",
-    icon: "/icons/wireshark.svg",
+    icon: "/icons/wireshark.png",
     category: "Network",
   },
   {
     name: "Nessus",
-    icon: "/icons/nessus.svg",
+    icon: "/icons/nessus.png",
     category: "Vulnerability",
   },
   {
     name: "PowerShell",
-    icon: "/icons/powershell.svg",
+    icon: "/icons/powershell.png",
     category: "Automation",
   },
   {
     name: "Networking",
-    icon: "/icons/network.svg",
+    icon: "/icons/networking.png",
     category: "Infrastructure",
   },
   {
     name: "Cloud Security",
-    icon: "/icons/security.svg",
+    icon: "/icons/cloud-security.png",
     category: "Security",
   },
 ];
