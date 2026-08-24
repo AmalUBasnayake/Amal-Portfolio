@@ -17,7 +17,7 @@ const HireMe = () => {
 
     const link = document.createElement("a");
     link.href = "/Amal_Udayanga_Basnayake_CV.pdf";
-    link.download = "Amal_Udayanga_CV.pdf";
+    link.download = "Amal_Udayanga_Basnayake_CV.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
