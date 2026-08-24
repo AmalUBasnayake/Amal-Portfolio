@@ -333,7 +333,7 @@ const AboutPage = () => {
   ];
 
   const scrollToProjects = () => {
-    document.getElementById("Portofolio")?.scrollIntoView({
+    document.getElementById("Portfolio")?.scrollIntoView({
       behavior: "smooth",
     });
   };

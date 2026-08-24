@@ -1,6 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { supabase } from "../supabase";
-import { AppBar, Tabs, Tab, Box, Skeleton } from "@mui/material";
+import {
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
+  Skeleton,
+} from "@mui/material";
 import {
   Award,
   ShieldCheck,
@@ -9,6 +20,8 @@ import {
   AlertTriangle,
   Database,
   Layers3,
+  Terminal,
+  Activity,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import AOS from "aos";
@@ -21,7 +34,10 @@ import Certifications from "../components/Certifications";
    ARCHIVE TOGGLE
 ============================================================ */
 
-const ToggleButton = ({ onClick, isShowingMore }) => (
+const ToggleButton = ({
+  onClick,
+  isShowingMore,
+}) => (
   <button
     type="button"
     onClick={onClick}
@@ -32,18 +48,21 @@ const ToggleButton = ({ onClick, isShowingMore }) => (
       inline-flex
       items-center
       justify-center
+      gap-3
+      overflow-hidden
       rounded-xl
       border
       border-emerald-500/20
-      bg-emerald-500/10
-      px-6
-      py-3
-      shadow-lg
+      bg-emerald-500/[0.07]
+      px-7
+      py-3.5
+      shadow-[0_0_30px_rgba(16,185,129,0.04)]
       transition-all
       duration-300
+      hover:-translate-y-0.5
       hover:border-emerald-500/40
-      hover:bg-emerald-500/20
-      hover:shadow-[0_0_30px_rgba(16,185,129,0.08)]
+      hover:bg-emerald-500/[0.12]
+      hover:shadow-[0_0_35px_rgba(16,185,129,0.10)]
       focus:outline-none
       focus-visible:ring-2
       focus-visible:ring-emerald-400
@@ -53,17 +72,35 @@ const ToggleButton = ({ onClick, isShowingMore }) => (
   >
     <span
       className="
+        absolute
+        inset-0
+        -translate-x-full
+        bg-gradient-to-r
+        from-transparent
+        via-white/[0.06]
+        to-transparent
+        transition-transform
+        duration-700
+        group-hover:translate-x-full
+      "
+    />
+
+    <span
+      className="
+        relative
         flex
         items-center
-        gap-2
-        text-sm
+        gap-2.5
+        text-[10px]
         font-black
         uppercase
-        tracking-wider
+        tracking-[0.16em]
         text-emerald-400
       "
     >
-      {isShowingMore ? "Show Less Labs" : "Explore Full Lab Archive"}
+      {isShowingMore
+        ? "Show Less Labs"
+        : "Explore Full Lab Archive"}
 
       <Zap
         aria-hidden="true"
@@ -87,7 +124,12 @@ const ToggleButton = ({ onClick, isShowingMore }) => (
    TAB PANEL
 ============================================================ */
 
-function TabPanel({ children, value, index, id }) {
+function TabPanel({
+  children,
+  value,
+  index,
+  id,
+}) {
   const isActive = value === index;
 
   return (
@@ -98,10 +140,28 @@ function TabPanel({ children, value, index, id }) {
       aria-hidden={!isActive}
     >
       {isActive && (
-        <Box sx={{ p: { xs: 0, sm: 2 }, mt: 2 }}>
+        <Box
+          sx={{
+            p: {
+              xs: 0,
+              sm: 1,
+              md: 1.5,
+            },
+            mt: {
+              xs: 1.5,
+              md: 2,
+            },
+          }}
+        >
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{
+              opacity: 0,
+              y: 14,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
             transition={{
               duration: 0.4,
               ease: "easeOut",
@@ -131,8 +191,7 @@ function getTabProps(index) {
 ============================================================ */
 
 /*
-  The order intentionally reflects the current portfolio
-  positioning:
+  Portfolio positioning:
 
   AI Security
   → Cloud / Container Security
@@ -188,10 +247,14 @@ const PRIORITY_ORDER = [
 ============================================================ */
 
 const getProjectRank = (title = "") => {
-  const normalizedTitle = title.toLowerCase();
+  const normalizedTitle =
+    title.toLowerCase();
 
-  const index = PRIORITY_ORDER.findIndex((key) =>
-    normalizedTitle.includes(key.toLowerCase())
+  const index = PRIORITY_ORDER.findIndex(
+    (key) =>
+      normalizedTitle.includes(
+        key.toLowerCase()
+      )
   );
 
   return index === -1 ? 999 : index;
@@ -207,10 +270,6 @@ const sortProjects = (projects = []) => {
       return rankDifference;
     }
 
-    /*
-      Stable secondary ordering keeps the archive
-      predictable when two projects have the same rank.
-    */
     return (a?.Title || "").localeCompare(
       b?.Title || ""
     );
@@ -235,9 +294,9 @@ export default function Portfolio() {
 
   useEffect(() => {
     AOS.init({
-      duration: 900,
+      duration: 850,
       once: true,
-      offset: 80,
+      offset: 70,
       easing: "ease-out-cubic",
     });
 
@@ -266,7 +325,8 @@ export default function Portfolio() {
         throw supabaseError;
       }
 
-      const sortedProjects = sortProjects(data || []);
+      const sortedProjects =
+        sortProjects(data || []);
 
       setProjects(sortedProjects);
     } catch (err) {
@@ -321,21 +381,22 @@ export default function Portfolio() {
 
   return (
     <section
-      id="Portofolio"
+      id="Portfolio"
       className="
         relative
         w-full
         overflow-hidden
         bg-[#030014]
         px-[5%]
-        pt-24
         pb-28
-        md:px-[8%]
-        lg:px-[10%]
+        pt-24
+        md:px-[7%]
+        lg:px-[8%]
+        lg:pt-28
       "
     >
       {/* ======================================================
-          BACKGROUND SYSTEM GLOW
+          BACKGROUND SYSTEM
       ====================================================== */}
 
       <div
@@ -344,7 +405,7 @@ export default function Portfolio() {
           pointer-events-none
           absolute
           inset-0
-          bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.08),transparent_55%)]
+          bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.075),transparent_52%)]
         "
       />
 
@@ -354,9 +415,9 @@ export default function Portfolio() {
           pointer-events-none
           absolute
           left-[-15%]
-          top-[25%]
-          h-[350px]
-          w-[350px]
+          top-[22%]
+          h-[360px]
+          w-[360px]
           rounded-full
           bg-emerald-500/[0.025]
           blur-[120px]
@@ -368,45 +429,69 @@ export default function Portfolio() {
         className="
           pointer-events-none
           absolute
+          bottom-[8%]
           right-[-15%]
-          bottom-[10%]
-          h-[400px]
-          w-[400px]
+          h-[420px]
+          w-[420px]
           rounded-full
           bg-blue-500/[0.025]
           blur-[130px]
         "
       />
 
+      {/* Technical grid */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          opacity-[0.018]
+        "
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.35) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
+
       {/* ======================================================
           CONTENT
       ====================================================== */}
 
-      <div className="relative z-10 mx-auto max-w-[1800px]">
-
+      <div className="relative z-10 mx-auto max-w-[1700px]">
         {/* ====================================================
             HEADER
         ==================================================== */}
 
         <div
           data-aos="fade-up"
-          className="mb-12 text-center"
+          className="mx-auto mb-12 max-w-5xl text-center"
         >
+          {/* Status badge */}
+
           <div
             className="
-              mb-4
+              mb-5
               inline-flex
               items-center
-              gap-2
+              gap-2.5
               rounded-full
               border
               border-emerald-500/15
-              bg-emerald-500/[0.04]
+              bg-emerald-500/[0.035]
               px-4
               py-2
               backdrop-blur-xl
             "
           >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
+
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            </span>
+
             <ShieldCheck
               aria-hidden="true"
               className="h-3.5 w-3.5 text-emerald-400"
@@ -425,18 +510,22 @@ export default function Portfolio() {
             </span>
           </div>
 
+          {/* Eyebrow */}
+
           <p
             className="
               mb-3
-              text-[9px]
               font-mono
+              text-[8px]
               uppercase
-              tracking-[0.35em]
+              tracking-[0.38em]
               text-slate-600
             "
           >
             Security Engineering / Lab Archive
           </p>
+
+          {/* Main heading */}
 
           <h2
             className="
@@ -444,7 +533,8 @@ export default function Portfolio() {
               font-black
               uppercase
               italic
-              tracking-[-0.04em]
+              leading-[0.95]
+              tracking-[-0.045em]
               text-white
               sm:text-5xl
               md:text-6xl
@@ -454,12 +544,12 @@ export default function Portfolio() {
             Security{" "}
             <span
               className="
-                text-transparent
-                bg-clip-text
                 bg-gradient-to-r
                 from-emerald-400
                 via-cyan-400
                 to-blue-500
+                bg-clip-text
+                text-transparent
               "
             >
               Engineering Labs.
@@ -469,7 +559,7 @@ export default function Portfolio() {
           <p
             className="
               mx-auto
-              mt-5
+              mt-6
               max-w-3xl
               text-sm
               leading-7
@@ -485,7 +575,7 @@ export default function Portfolio() {
           </p>
 
           {/* ==================================================
-              LIVE PROJECT METRICS
+              LIVE METRICS
           ================================================== */}
 
           {!loading && !error && (
@@ -499,101 +589,29 @@ export default function Portfolio() {
                 gap-3
               "
             >
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  border-white/[0.06]
-                  bg-white/[0.025]
-                  px-4
-                  py-2.5
-                  backdrop-blur-xl
-                "
-              >
-                <Database
-                  aria-hidden="true"
-                  className="h-3.5 w-3.5 text-emerald-400"
-                />
+              {/* Lab count */}
 
-                <span
-                  className="
-                    text-[8px]
-                    font-black
-                    uppercase
-                    tracking-[0.18em]
-                    text-slate-500
-                  "
-                >
-                  {projectCount} Labs Loaded
-                </span>
-              </div>
+              <MetricChip
+                icon={Database}
+                color="emerald"
+                value={`${projectCount} Labs Loaded`}
+              />
 
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  border-white/[0.06]
-                  bg-white/[0.025]
-                  px-4
-                  py-2.5
-                  backdrop-blur-xl
-                "
-              >
-                <Layers3
-                  aria-hidden="true"
-                  className="h-3.5 w-3.5 text-blue-400"
-                />
+              {/* Domain */}
 
-                <span
-                  className="
-                    text-[8px]
-                    font-black
-                    uppercase
-                    tracking-[0.18em]
-                    text-slate-500
-                  "
-                >
-                  Multi-Domain Security
-                </span>
-              </div>
+              <MetricChip
+                icon={Layers3}
+                color="blue"
+                value="Multi-Domain Security"
+              />
 
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  border-white/[0.06]
-                  bg-white/[0.025]
-                  px-4
-                  py-2.5
-                  backdrop-blur-xl
-                "
-              >
-                <ShieldCheck
-                  aria-hidden="true"
-                  className="h-3.5 w-3.5 text-cyan-400"
-                />
+              {/* Engineering */}
 
-                <span
-                  className="
-                    text-[8px]
-                    font-black
-                    uppercase
-                    tracking-[0.18em]
-                    text-slate-500
-                  "
-                >
-                  Hands-On Engineering
-                </span>
-              </div>
+              <MetricChip
+                icon={Activity}
+                color="cyan"
+                value="Hands-On Engineering"
+              />
             </div>
           )}
         </div>
@@ -607,11 +625,13 @@ export default function Portfolio() {
             position="static"
             elevation={0}
             sx={{
-              bgcolor: "rgba(255,255,255,0.025)",
-              backdropFilter: "blur(18px)",
+              bgcolor:
+                "rgba(255,255,255,0.018)",
+              backdropFilter:
+                "blur(20px)",
               border:
                 "1px solid rgba(255,255,255,0.06)",
-              borderRadius: "24px",
+              borderRadius: "22px",
               mb: 1,
               overflow: "hidden",
             }}
@@ -623,16 +643,16 @@ export default function Portfolio() {
               aria-label="Security portfolio sections"
               sx={{
                 minHeight: {
-                  xs: 76,
-                  md: 86,
+                  xs: 72,
+                  md: 78,
                 },
 
                 "& .MuiTabs-indicator": {
-                  height: 3,
+                  height: 2,
                   borderRadius: "999px",
                   bgcolor: "#10b981",
                   boxShadow:
-                    "0 0 16px rgba(16,185,129,0.35)",
+                    "0 0 18px rgba(16,185,129,0.4)",
                 },
 
                 "& .MuiTabs-flexContainer": {
@@ -640,86 +660,16 @@ export default function Portfolio() {
                 },
               }}
             >
-              <Tab
-                {...getTabProps(0)}
-                icon={
-                  <ShieldCheck
-                    className="
-                      mb-1
-                      h-5
-                      w-5
-                      text-emerald-500
-                    "
-                  />
-                }
+              <PortfolioTab
+                index={0}
+                icon={ShieldCheck}
                 label="Security Labs"
-                sx={{
-                  minHeight: {
-                    xs: 76,
-                    md: 86,
-                  },
-                  color: "#64748b",
-                  fontWeight: 800,
-                  fontSize: {
-                    xs: "0.65rem",
-                    md: "0.75rem",
-                  },
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  transition:
-                    "all 250ms ease",
-
-                  "&.Mui-selected": {
-                    color: "#ffffff",
-                  },
-
-                  "&:focus-visible": {
-                    outline:
-                      "2px solid #34d399",
-                    outlineOffset: "-3px",
-                  },
-                }}
               />
 
-              <Tab
-                {...getTabProps(1)}
-                icon={
-                  <Award
-                    className="
-                      mb-1
-                      h-5
-                      w-5
-                      text-emerald-500
-                    "
-                  />
-                }
+              <PortfolioTab
+                index={1}
+                icon={Award}
                 label="Credentials"
-                sx={{
-                  minHeight: {
-                    xs: 76,
-                    md: 86,
-                  },
-                  color: "#64748b",
-                  fontWeight: 800,
-                  fontSize: {
-                    xs: "0.65rem",
-                    md: "0.75rem",
-                  },
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  transition:
-                    "all 250ms ease",
-
-                  "&.Mui-selected": {
-                    color: "#ffffff",
-                  },
-
-                  "&:focus-visible": {
-                    outline:
-                      "2px solid #34d399",
-                    outlineOffset: "-3px",
-                  },
-                }}
               />
             </Tabs>
           </AppBar>
@@ -765,29 +715,14 @@ export default function Portfolio() {
                     bg-red-500/10
                   "
                 >
-                  <AlertTriangle
-                    className="h-5 w-5 text-red-400"
-                  />
+                  <AlertTriangle className="h-5 w-5 text-red-400" />
                 </div>
 
-                <p
-                  className="
-                    text-sm
-                    font-bold
-                    text-red-300
-                  "
-                >
+                <p className="text-sm font-bold text-red-300">
                   {error}
                 </p>
 
-                <p
-                  className="
-                    mt-2
-                    text-xs
-                    leading-6
-                    text-slate-600
-                  "
-                >
+                <p className="mx-auto mt-2 max-w-md text-xs leading-6 text-slate-600">
                   The security lab archive could not
                   be retrieved from the project data
                   source.
@@ -821,16 +756,14 @@ export default function Portfolio() {
                     focus-visible:ring-red-400
                   "
                 >
-                  <RefreshCw
-                    className="h-3.5 w-3.5"
-                  />
+                  <RefreshCw className="h-3.5 w-3.5" />
                   Retry Archive
                 </button>
               </div>
             )}
 
             {/* =================================================
-                LOADING / PROJECT GRID
+                PROJECT GRID
             ================================================= */}
 
             {!error && (
@@ -838,50 +771,48 @@ export default function Portfolio() {
                 className="
                   grid
                   grid-cols-1
-                  gap-6
+                  gap-5
+                  sm:gap-6
                   md:grid-cols-2
                   xl:grid-cols-3
-                  2xl:grid-cols-4
                   auto-rows-fr
                 "
               >
                 {loading
-                  ? [...Array(8)].map((_, index) => (
-                      <div
-                        key={`skeleton-${index}`}
-                        className="h-full"
-                      >
-                        <Skeleton
-                          variant="rectangular"
-                          animation="wave"
-                          height={450}
-                          sx={{
-                            width: "100%",
-                            bgcolor:
-                              "rgba(255,255,255,0.045)",
-                            borderRadius: "28px",
-                            transform: "none",
-                          }}
+                  ? [...Array(6)].map(
+                      (_, index) => (
+                        <ProjectSkeleton
+                          key={`skeleton-${index}`}
                         />
-                      </div>
-                    ))
+                      )
+                    )
                   : visibleProjects.map(
                       (project, index) => (
-                        <div
+                        <motion.div
                           key={
                             project.id ||
                             `project-${index}`
                           }
-                          data-aos="zoom-in-up"
-                          data-aos-delay={
-                            (index % 8) * 60
-                          }
-                          className="flex h-full"
+                          initial={{
+                            opacity: 0,
+                            y: 18,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
+                          transition={{
+                            duration: 0.45,
+                            delay:
+                              (index % 6) * 0.055,
+                            ease: "easeOut",
+                          }}
+                          className="flex h-full min-w-0"
                         >
                           <CardProject
                             {...project}
                           />
-                        </div>
+                        </motion.div>
                       )
                     )}
               </div>
@@ -951,7 +882,27 @@ export default function Portfolio() {
             {!loading &&
               !error &&
               projects.length > 6 && (
-                <div className="mt-14 flex justify-center">
+                <div className="mt-14 flex flex-col items-center">
+                  <div className="mb-4 flex items-center gap-3">
+                    <Terminal
+                      size={11}
+                      className="text-emerald-500/60"
+                    />
+
+                    <span
+                      className="
+                        font-mono
+                        text-[7px]
+                        font-bold
+                        uppercase
+                        tracking-[0.25em]
+                        text-slate-700
+                      "
+                    >
+                      Archive Control
+                    </span>
+                  </div>
+
                   <ToggleButton
                     onClick={() =>
                       setShowAllProjects(
@@ -996,51 +947,309 @@ export default function Portfolio() {
         ==================================================== */}
 
         {!loading && !error && (
-          <div
-            className="
-              mt-16
-              flex
-              items-center
-              justify-center
-              gap-3
-              text-center
-            "
-          >
-            <span
-              aria-hidden="true"
-              className="
-                h-px
-                w-8
-                bg-slate-800
-                md:w-16
-              "
-            />
+          <div className="mt-16">
+            <div className="mx-auto mb-6 h-px max-w-3xl bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-            <span
+            <div
               className="
-                text-[7px]
-                font-mono
-                font-bold
-                uppercase
-                tracking-[0.28em]
-                text-slate-700
+                flex
+                items-center
+                justify-center
+                gap-3
+                text-center
               "
             >
-              Build • Secure • Detect • Automate
-            </span>
+              <span
+                aria-hidden="true"
+                className="
+                  h-px
+                  w-8
+                  bg-slate-800
+                  md:w-16
+                "
+              />
 
-            <span
-              aria-hidden="true"
-              className="
-                h-px
-                w-8
-                bg-slate-800
-                md:w-16
-              "
-            />
+              <span
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  font-mono
+                  text-[7px]
+                  font-bold
+                  uppercase
+                  tracking-[0.28em]
+                  text-slate-700
+                "
+              >
+                <span className="h-1 w-1 rounded-full bg-emerald-500/50" />
+
+                Build • Secure • Detect • Automate
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="
+                  h-px
+                  w-8
+                  bg-slate-800
+                  md:w-16
+                "
+              />
+            </div>
           </div>
         )}
       </div>
     </section>
   );
 }
+
+/* ================================================================
+   PORTFOLIO TAB
+================================================================ */
+
+const PortfolioTab = ({
+  icon: Icon,
+  label,
+  index,
+}) => (
+  <Tab
+    {...getTabProps(index)}
+    icon={
+      <Icon
+        aria-hidden="true"
+        className="mb-1 h-4 w-4 text-emerald-500"
+      />
+    }
+    label={label}
+    sx={{
+      minHeight: {
+        xs: 72,
+        md: 78,
+      },
+
+      color: "#64748b",
+
+      fontWeight: 800,
+
+      fontSize: {
+        xs: "0.6rem",
+        sm: "0.65rem",
+        md: "0.72rem",
+      },
+
+      letterSpacing: "0.12em",
+
+      textTransform: "uppercase",
+
+      transition:
+        "all 250ms ease",
+
+      "&.Mui-selected": {
+        color: "#ffffff",
+      },
+
+      "&:hover": {
+        color: "#cbd5e1",
+        background:
+          "rgba(255,255,255,0.02)",
+      },
+
+      "&:focus-visible": {
+        outline:
+          "2px solid #34d399",
+        outlineOffset: "-3px",
+      },
+    }}
+  />
+);
+
+/* ================================================================
+   METRIC CHIP
+================================================================ */
+
+const MetricChip = ({
+  icon: Icon,
+  color,
+  value,
+}) => {
+  const colorMap = {
+    emerald: "text-emerald-400",
+    blue: "text-blue-400",
+    cyan: "text-cyan-400",
+  };
+
+  return (
+    <div
+      className="
+        inline-flex
+        items-center
+        gap-2.5
+        rounded-xl
+        border
+        border-white/[0.06]
+        bg-white/[0.02]
+        px-4
+        py-2.5
+        backdrop-blur-xl
+        transition-all
+        duration-300
+        hover:border-white/[0.10]
+        hover:bg-white/[0.035]
+      "
+    >
+      <Icon
+        aria-hidden="true"
+        className={`h-3.5 w-3.5 ${
+          colorMap[color] ||
+          "text-emerald-400"
+        }`}
+      />
+
+      <span
+        className="
+          text-[8px]
+          font-black
+          uppercase
+          tracking-[0.18em]
+          text-slate-500
+        "
+      >
+        {value}
+      </span>
+    </div>
+  );
+};
+
+/* ================================================================
+   PROJECT SKELETON
+================================================================ */
+
+const ProjectSkeleton = () => (
+  <div className="h-full min-h-[520px] overflow-hidden rounded-[1.7rem] border border-white/[0.06] bg-white/[0.02] p-5">
+    <Skeleton
+      variant="rectangular"
+      animation="wave"
+      sx={{
+        width: "100%",
+        aspectRatio: "16 / 9",
+        height: "auto",
+        bgcolor:
+          "rgba(255,255,255,0.045)",
+        borderRadius: "16px",
+        transform: "none",
+      }}
+    />
+
+    <div className="mt-5">
+      <Skeleton
+        variant="text"
+        animation="wave"
+        sx={{
+          width: "32%",
+          bgcolor:
+            "rgba(255,255,255,0.04)",
+          transform: "none",
+        }}
+      />
+
+      <Skeleton
+        variant="text"
+        animation="wave"
+        sx={{
+          width: "86%",
+          height: 32,
+          bgcolor:
+            "rgba(255,255,255,0.06)",
+          transform: "none",
+        }}
+      />
+
+      <Skeleton
+        variant="text"
+        animation="wave"
+        sx={{
+          width: "72%",
+          height: 32,
+          bgcolor:
+            "rgba(255,255,255,0.05)",
+          transform: "none",
+        }}
+      />
+
+      <div className="mt-4 space-y-2">
+        <Skeleton
+          variant="text"
+          animation="wave"
+          sx={{
+            width: "100%",
+            bgcolor:
+              "rgba(255,255,255,0.035)",
+            transform: "none",
+          }}
+        />
+
+        <Skeleton
+          variant="text"
+          animation="wave"
+          sx={{
+            width: "88%",
+            bgcolor:
+              "rgba(255,255,255,0.035)",
+            transform: "none",
+          }}
+        />
+      </div>
+
+      <div className="mt-5 flex gap-2">
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          sx={{
+            width: 72,
+            height: 24,
+            bgcolor:
+              "rgba(255,255,255,0.04)",
+          }}
+        />
+
+        <Skeleton
+          variant="rounded"
+          animation="wave"
+          sx={{
+            width: 82,
+            height: 24,
+            bgcolor:
+              "rgba(255,255,255,0.04)",
+          }}
+        />
+      </div>
+
+      <div className="mt-5 border-t border-white/[0.05] pt-4">
+        <div className="flex justify-between">
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{
+              width: 90,
+              height: 34,
+              bgcolor:
+                "rgba(255,255,255,0.04)",
+            }}
+          />
+
+          <Skeleton
+            variant="rounded"
+            animation="wave"
+            sx={{
+              width: 125,
+              height: 34,
+              bgcolor:
+                "rgba(255,255,255,0.04)",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+);

@@ -560,7 +560,8 @@ const CardProject = ({
           <div
             className="
               relative
-              aspect-[16/10]
+              aspect-video
+              w-full
               flex-shrink-0
               overflow-hidden
               rounded-2xl
@@ -573,15 +574,16 @@ const CardProject = ({
               src={Img}
               alt={Title}
               loading="lazy"
+              decoding="async"
               className="
+                block
                 h-full
                 w-full
-                rounded-xl
                 object-contain
                 object-center
                 transition-transform
                 duration-700
-                group-hover:scale-[1.035]
+                group-hover:scale-[1.025]
               "
               onError={(e) => {
                 e.currentTarget.onerror = null;
@@ -591,14 +593,13 @@ const CardProject = ({
             />
 
             {/* Image overlay */}
-
             <div
               className="
                 pointer-events-none
                 absolute
                 inset-0
                 bg-gradient-to-t
-                from-black/35
+                from-black/20
                 via-transparent
                 to-transparent
               "
@@ -745,8 +746,8 @@ const CardProject = ({
               className="
                 mb-4
                 min-h-[88px]
-                text-sm
                 break-words
+                text-sm
                 leading-relaxed
                 text-slate-400
               "
@@ -777,8 +778,8 @@ const CardProject = ({
                     bg-white/[0.035]
                     px-2.5
                     py-1
-                    text-[8px]
                     font-mono
+                    text-[8px]
                     font-semibold
                     uppercase
                     tracking-[0.08em]

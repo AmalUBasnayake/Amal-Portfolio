@@ -592,7 +592,7 @@ const Home = ({ labMode, setLabMode }) => {
               "
             >
               <a
-                href="#Portofolio"
+                href="#Portfolio"
                 className="
                   group
                   relative
