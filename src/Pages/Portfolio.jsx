@@ -1012,9 +1012,12 @@ const PortfolioTab = ({
   icon: Icon,
   label,
   index,
+  ...tabProps
 }) => (
   <Tab
     {...getTabProps(index)}
+    {...tabProps}
+    value={index}
     icon={
       <Icon
         aria-hidden="true"

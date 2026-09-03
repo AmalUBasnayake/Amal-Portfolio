@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { forwardRef, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
@@ -319,15 +319,16 @@ const MetricCard = ({
    CREDENTIAL CARD
    ============================================================ */
 
-const CredentialCard = ({
+const CredentialCard = forwardRef(({
   cert,
   index,
   onSelect,
-}) => {
+}, ref) => {
   const Icon = cert.icon || Award;
 
   return (
     <motion.article
+      ref={ref}
       layout
       initial={{
         opacity: 0,
@@ -608,7 +609,9 @@ const CredentialCard = ({
       </div>
     </motion.article>
   );
-};
+});
+
+CredentialCard.displayName = "CredentialCard";
 
 /* ============================================================
    ACADEMIC PROGRESSION
