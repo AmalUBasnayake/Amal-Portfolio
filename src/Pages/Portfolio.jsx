@@ -203,7 +203,10 @@ function getTabProps(index) {
 */
 
 const PRIORITY_ORDER = [
-  // AI SECURITY
+  // AI SECURITY — SC-500 AI SECURITY SERIES
+  "AI Threat Detection",
+  "AI Security Posture",
+  "AI Runtime Threat Protection",
   "OpenAI",
   "Purview",
   "Content Safety",
@@ -1012,12 +1015,9 @@ const PortfolioTab = ({
   icon: Icon,
   label,
   index,
-  ...tabProps
 }) => (
   <Tab
     {...getTabProps(index)}
-    {...tabProps}
-    value={index}
     icon={
       <Icon
         aria-hidden="true"

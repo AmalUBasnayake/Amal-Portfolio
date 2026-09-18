@@ -30,35 +30,36 @@ const articles = [
 
   {
     title:
-      "Azure Kubernetes Security Monitoring with Microsoft Defender for Containers",
-    category: "Cloud & Container Security",
+      "Securing an Azure AI Workload with Microsoft Defender for Cloud",
+    category: "AI Security & Cloud Defense",
     description:
-      "A practical security engineering write-up focused on Kubernetes security monitoring with Microsoft Defender for Containers.",
-    date: "Jun 26, 2026",
-    readTime: "5 min read",
+      "SC-500 Lab 05 covering AI security posture, identity hardening, network isolation, diagnostic logging, AI asset discovery, and security telemetry using Microsoft Foundry and Microsoft Defender for Cloud.",
+    date: "Sep 18, 2026",
+    readTime: "12 min read",
     tags: [
-      "Azure",
-      "AKS",
-      "Defender for Containers",
+      "Defender for Cloud",
+      "AI Security",
+      "Defender CSPM",
+      "Zero Trust",
     ],
-    url: "https://medium.com/@amalubasnayake/%EF%B8%8F-azure-kubernetes-security-monitoring-with-microsoft-defender-for-containers-a634df045933",
+    url: "https://medium.com/@amalubasnayake/securing-an-azure-ai-workload-with-microsoft-defender-for-cloud-5c85d2a86ca1",
   },
 
   {
     title:
-      "Securing GitHub Repositories with Microsoft Defender for Cloud DevOps Security: A Practical Implementation Guide",
-    category: "DevSecOps",
+      "SC-500 Lab 04: Building an AI Threat Detection & Response Pipeline with Microsoft Sentinel",
+    category: "AI Security & SIEM",
     description:
-      "A practical implementation covering GitHub integration with Microsoft Defender for Cloud, DevOps security capabilities, infrastructure-as-code assessment, repository security posture, and security findings.",
-    date: "Jun 23, 2026",
-    readTime: "5 min read",
+      "An end-to-end AI threat detection workflow connecting Azure AI Foundry telemetry with Log Analytics, KQL, Microsoft Sentinel, MITRE ATT&CK, alerting, incident investigation, and response.",
+    date: "Sep 14, 2026",
+    readTime: "12 min read",
     tags: [
-      "GitHub",
-      "Defender for Cloud",
-      "DevSecOps",
-      "IaC Security",
+      "Microsoft Sentinel",
+      "KQL",
+      "Detection Engineering",
+      "Incident Response",
     ],
-    url: "https://medium.com/@amalubasnayake/securing-github-repositories-with-microsoft-defender-for-cloud-devops-security-a-practical-69c3158cfb91",
+    url: "https://medium.com/@amalubasnayake/sc-500-lab-04-building-an-ai-threat-detection-response-pipeline-with-microsoft-sentinel-e35dcdf26f27",
   },
 
   {
@@ -110,6 +111,39 @@ const articles = [
       "Azure",
     ],
     url: "https://medium.com/@amalubasnayake/%EF%B8%8F-building-a-siem-threat-detection-lab-using-microsoft-sentinel-in-azure-2303339c6353",
+  },
+
+  {
+    title:
+      "Securing GitHub Repositories with Microsoft Defender for Cloud DevOps Security: A Practical Implementation Guide",
+    category: "DevSecOps",
+    description:
+      "A practical implementation covering GitHub integration with Microsoft Defender for Cloud, DevOps security capabilities, infrastructure-as-code assessment, repository security posture, and security findings.",
+    date: "Jun 23, 2026",
+    readTime: "5 min read",
+    tags: [
+      "GitHub",
+      "Defender for Cloud",
+      "DevSecOps",
+      "IaC Security",
+    ],
+    url: "https://medium.com/@amalubasnayake/securing-github-repositories-with-microsoft-defender-for-cloud-devops-security-a-practical-69c3158cfb91",
+  },
+
+  {
+    title:
+      "Azure Kubernetes Security Monitoring with Microsoft Defender for Containers",
+    category: "Cloud & Container Security",
+    description:
+      "A practical security engineering write-up focused on Kubernetes security monitoring with Microsoft Defender for Containers.",
+    date: "Jun 26, 2026",
+    readTime: "5 min read",
+    tags: [
+      "Azure",
+      "AKS",
+      "Defender for Containers",
+    ],
+    url: "https://medium.com/@amalubasnayake/%EF%B8%8F-azure-kubernetes-security-monitoring-with-microsoft-defender-for-containers-a634df045933",
   },
 
   {

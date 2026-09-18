@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { BookOpen, ArrowUpRight } from "lucide-react";
 
 const Insights = () => {
-  // 🔗 ඔයාගේ නිවැරදි කළ ලිපි සහ ලින්ක්ස්
+  // 
   const articles = [
     {
       title: "Automating Threat Response with Microsoft Sentinel & SOAR",
