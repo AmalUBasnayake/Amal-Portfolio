@@ -23,7 +23,14 @@ const CardProject = ({
      FEATURED SECURITY LABS
   ========================================================= */
 
-  const isFeatured = [
+  const normalizedTitle = (Title || "").toLowerCase();
+
+  const isRecentlyPublished =
+    normalizedTitle.includes("sc-500 lab 07") ||
+    normalizedTitle.includes("sc-500 lab 08") ||
+    normalizedTitle.includes("mcp security engineering lab");
+
+  const isFeatured = isRecentlyPublished || [
     // AI Security
     "openai-private-endpoint",
     "purview-ai-shield",
@@ -57,6 +64,31 @@ const CardProject = ({
 
   const getTags = (title = "") => {
     const t = title.toLowerCase();
+
+    // RECENTLY PUBLISHED SC-500 / AI SECURITY
+    if (t.includes("sc-500 lab 07")) {
+      return [
+        "Defender XDR",
+        "Investigation",
+        "Incident Response",
+      ];
+    }
+
+    if (t.includes("sc-500 lab 08")) {
+      return [
+        "Entra ID",
+        "Managed Identity",
+        "Microsoft Foundry",
+      ];
+    }
+
+    if (t.includes("mcp security engineering lab")) {
+      return [
+        "MCP",
+        "AI Security",
+        "Security Engineering",
+      ];
+    }
 
     // AI SECURITY
     if (t.includes("openai")) {
@@ -276,6 +308,18 @@ const CardProject = ({
   const getDomain = (title = "") => {
     const t = title.toLowerCase();
 
+    if (t.includes("sc-500 lab 07")) {
+      return "AI Security / Incident Response";
+    }
+
+    if (t.includes("sc-500 lab 08")) {
+      return "AI Security / Identity";
+    }
+
+    if (t.includes("mcp security engineering lab")) {
+      return "AI Security / MCP";
+    }
+
     if (
       t.includes("openai") ||
       t.includes("purview") ||
@@ -340,6 +384,9 @@ const CardProject = ({
 
     // EXPERT
     if (
+      t.includes("sc-500 lab 07") ||
+      t.includes("sc-500 lab 08") ||
+      t.includes("mcp security engineering lab") ||
       t.includes("openai") ||
       t.includes("purview") ||
       t.includes("content safety") ||

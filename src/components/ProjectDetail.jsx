@@ -327,6 +327,214 @@ const ProjectDetails = () => {
     ) || "Lab Verified";
 
   /* ============================================================
+     RECENT PROJECT METADATA FALLBACKS
+     Keeps the detail view specific for the three new lab records
+     even when the database row contains only core fields.
+  ============================================================ */
+
+  const titleKey = title.toLowerCase();
+
+  const derivedTechStack = useMemo(() => {
+    if (titleKey.includes("sc-500 lab 07")) {
+      return [
+        "Microsoft Defender XDR",
+        "Advanced Hunting",
+        "Microsoft Foundry",
+        "KQL",
+        "Incident Response",
+      ];
+    }
+
+    if (titleKey.includes("sc-500 lab 08")) {
+      return [
+        "Microsoft Entra ID",
+        "Azure RBAC",
+        "Managed Identity",
+        "Microsoft Foundry",
+        "PowerShell",
+        "KQL",
+      ];
+    }
+
+    if (titleKey.includes("mcp security engineering lab")) {
+      return [
+        "Model Context Protocol",
+        "Python",
+        "MCP Inspector",
+        "Threat Modeling",
+        "Detection Engineering",
+        "Incident Response",
+      ];
+    }
+
+    return [];
+  }, [titleKey]);
+
+  const derivedFocus = useMemo(() => {
+    if (titleKey.includes("sc-500 lab 07")) {
+      return [
+        "AI security investigation",
+        "Incident analysis",
+        "Advanced hunting",
+        "Detection validation",
+        "Controlled response",
+      ];
+    }
+
+    if (titleKey.includes("sc-500 lab 08")) {
+      return [
+        "Identity-first AI security",
+        "RBAC authorization",
+        "Keyless authentication",
+        "Telemetry and KQL",
+        "Security verification",
+      ];
+    }
+
+    if (titleKey.includes("mcp security engineering lab")) {
+      return [
+        "Security architecture",
+        "Threat modeling",
+        "Tool and session security",
+        "Validation and evidence",
+        "Detection and incident response",
+      ];
+    }
+
+    return [];
+  }, [titleKey]);
+
+  const derivedControls = useMemo(() => {
+    if (titleKey.includes("sc-500 lab 07")) {
+      return [
+        "Defender XDR incident investigation",
+        "Advanced hunting",
+        "Controlled validation",
+        "Evidence-driven response",
+      ];
+    }
+
+    if (titleKey.includes("sc-500 lab 08")) {
+      return [
+        "Microsoft Entra ID",
+        "Azure RBAC",
+        "Managed Identity",
+        "Keyless authentication",
+        "Diagnostic telemetry",
+      ];
+    }
+
+    if (titleKey.includes("mcp security engineering lab")) {
+      return [
+        "Explicit trust boundaries",
+        "Authorization and allowlisting",
+        "Input validation",
+        "Secrets and data protection",
+        "Telemetry and detection",
+      ];
+    }
+
+    return [];
+  }, [titleKey]);
+
+  const derivedOutcomes = useMemo(() => {
+    if (titleKey.includes("sc-500 lab 07")) {
+      return [
+        "Validated XDR investigation workflow",
+        "Correlated security evidence",
+        "Documented controlled response",
+      ];
+    }
+
+    if (titleKey.includes("sc-500 lab 08")) {
+      return [
+        "Validated Entra-authenticated AI access",
+        "Demonstrated keyless authentication",
+        "Validated telemetry and detection",
+        "Completed final security verification",
+      ];
+    }
+
+    if (titleKey.includes("mcp security engineering lab")) {
+      return [
+        "Security boundaries made explicit",
+        "Controls tested with evidence",
+        "Detection and response model defined",
+        "Residual risk considered",
+      ];
+    }
+
+    return [];
+  }, [titleKey]);
+
+  const derivedObjective =
+    titleKey.includes("sc-500 lab 07")
+      ? "Validate an AI security investigation and response workflow using Microsoft Defender XDR, controlled security activity, advanced hunting, evidence, and documented response."
+      : titleKey.includes("sc-500 lab 08")
+      ? "Prove secure, identity-driven AI access using Microsoft Entra ID, Azure RBAC, Managed Identity, keyless authentication, telemetry, KQL detection, and final verification."
+      : titleKey.includes("mcp security engineering lab")
+      ? "Treat MCP security as an engineering system spanning architecture, threat modeling, implementation, validation, monitoring, detection, incident response, and assurance."
+      : objective;
+
+  const derivedArchitecture =
+    titleKey.includes("sc-500 lab 07")
+      ? "Client → Microsoft Foundry AI workload → diagnostic telemetry → KQL / Advanced Hunting → Microsoft Defender XDR → investigation → response → verification."
+      : titleKey.includes("sc-500 lab 08")
+      ? "Client / PowerShell / REST → Microsoft Entra ID → Azure RBAC → Microsoft Foundry AI Project → keyless inference → Log Analytics / KQL → detection → investigation → response → verification."
+      : titleKey.includes("mcp security engineering lab")
+      ? "User / AI application → MCP client → MCP trust boundary → MCP server → controlled tools and enterprise resources → telemetry → detection → incident response → assurance."
+      : architectureText;
+
+  const derivedLabType =
+    titleKey.includes("mcp security engineering lab")
+      ? "AI Security Engineering Lab"
+      : titleKey.includes("sc-500 lab")
+      ? "SC-500 Validation Lab"
+      : labType;
+
+  const effectiveTechStack = techStack.length
+    ? techStack
+    : derivedTechStack.length
+    ? derivedTechStack
+    : FALLBACK_STACK;
+
+  const effectiveEngineeringFocus =
+    engineeringFocus.length
+      ? engineeringFocus
+      : derivedFocus.length
+      ? derivedFocus
+      : [
+          "Secure architecture",
+          "Identity & access controls",
+          "Network segmentation",
+          "Security visibility",
+        ];
+
+  const effectiveSecurityControls =
+    securityControls.length
+      ? securityControls
+      : derivedControls.length
+      ? derivedControls
+      : [
+          "Preventive controls",
+          "Least privilege",
+          "Monitoring",
+          "Validation",
+        ];
+
+  const effectiveOutcomes =
+    outcomes.length
+      ? outcomes
+      : derivedOutcomes.length
+      ? derivedOutcomes
+      : [
+          "Validated security controls",
+          "Improved security visibility",
+          "Reduced exposed attack surface",
+          "Practical implementation evidence",
+        ];
+
+  /* ============================================================
      LOADING
   ============================================================ */
 
@@ -489,7 +697,7 @@ const ProjectDetails = () => {
 
             {/* Tech stack */}
             <div className="mt-9 flex flex-wrap justify-center gap-3">
-              {techStack
+              {effectiveTechStack
                 .slice(0, 8)
                 .map((tech) => (
                   <span
@@ -560,7 +768,7 @@ const ProjectDetails = () => {
                   </div>
 
                   <p className="text-base leading-8 text-slate-400 md:text-lg">
-                    {objective}
+                    {derivedObjective}
                   </p>
                 </div>
               </div>
@@ -616,7 +824,7 @@ const ProjectDetails = () => {
 
               <div className="rounded-[2rem] border border-white/[0.07] bg-white/[0.015] p-7 md:p-10">
                 <p className="text-base leading-8 text-slate-400 md:text-lg">
-                  {architectureText}
+                  {derivedArchitecture}
                 </p>
 
                 <div className="mt-9 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -740,7 +948,7 @@ const ProjectDetails = () => {
 
                   <MetaItem
                     label="Project Type"
-                    value={labType}
+                    value={derivedLabType}
                   />
 
                   <div className="border-t border-white/[0.05] pt-7">
@@ -749,7 +957,7 @@ const ProjectDetails = () => {
                     </p>
 
                     <div className="flex flex-wrap gap-2">
-                      {techStack.map((tech) => (
+                      {effectiveTechStack.map((tech) => (
                         <span
                           key={tech}
                           className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-1.5 font-mono text-[8px] font-bold uppercase tracking-[0.08em] text-slate-400"

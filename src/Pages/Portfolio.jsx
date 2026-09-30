@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import {
   Award,
+  ArrowRight,
   ShieldCheck,
   Zap,
   RefreshCw,
@@ -203,6 +204,12 @@ function getTabProps(index) {
 */
 
 const PRIORITY_ORDER = [
+  // RECENTLY PUBLISHED SECURITY ENGINEERING WORK
+  // These keys match the actual Supabase project titles.
+  "AI Security Investigation & Response",
+  "AI Identity & Access Security",
+  "MCP Security Engineering Lab",
+
   // AI SECURITY — SC-500 AI SECURITY SERIES
   "AI Threat Detection",
   "AI Security Posture",
@@ -278,6 +285,131 @@ const sortProjects = (projects = []) => {
     );
   });
 };
+
+/* ============================================================
+   FEATURED SECURITY RESOURCE
+   Kept separate from the Supabase lab registry because this is
+   a knowledge resource, not a hands-on project.
+============================================================ */
+
+const FeaturedSecurityResource = () => (
+  <section
+    className="
+      mb-10
+      overflow-hidden
+      rounded-[2rem]
+      border
+      border-emerald-500/15
+      bg-[radial-gradient(circle_at_85%_20%,rgba(16,185,129,0.10),transparent_34%),rgba(255,255,255,0.015)]
+      p-6
+      md:p-8
+    "
+  >
+    <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+      <div className="min-w-0">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/15 bg-emerald-500/[0.06]">
+            <Award className="h-5 w-5 text-emerald-400" />
+          </div>
+
+          <div>
+            <p className="font-mono text-[8px] font-black uppercase tracking-[0.28em] text-emerald-400">
+              Featured Security Resource
+            </p>
+            <p className="mt-1 text-[9px] uppercase tracking-[0.14em] text-slate-700">
+              Knowledge Engineering / SC-500
+            </p>
+          </div>
+        </div>
+
+        <h3 className="max-w-4xl text-2xl font-black uppercase italic leading-tight tracking-[-0.03em] text-white md:text-3xl">
+          SC-500 Cloud & AI Security Engineer Master Guide
+        </h3>
+
+        <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-500 md:text-base">
+          A complete A-to-Z study resource connecting the SC-500 skills
+          measured to scenario-based decision making, least-privilege role
+          selection, exam traps, revision strategy, and hands-on security
+          engineering.
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            "SC-500",
+            "Cloud Security",
+            "AI Security",
+            "Exam Engineering",
+            "Least Privilege",
+            "Scenario-Based Learning",
+          ].map((tag) => (
+            <span
+              key={tag}
+              className="
+                rounded-full
+                border
+                border-white/[0.07]
+                bg-white/[0.025]
+                px-3
+                py-1.5
+                font-mono
+                text-[8px]
+                font-semibold
+                uppercase
+                tracking-[0.08em]
+                text-slate-500
+              "
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="shrink-0 lg:w-[250px]">
+        <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4 backdrop-blur-xl">
+          <p className="font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-slate-600">
+            Resource Status
+          </p>
+
+          <div className="mt-3 flex items-center gap-2">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+            <span className="text-[9px] font-black uppercase tracking-[0.14em] text-emerald-400">
+              Published / Open Access
+            </span>
+          </div>
+
+          <a
+            href="https://github.com/AmalUBasnayake/SC-500-Cloud-AI-Security-Engineer-Master-Guide"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              mt-5
+              inline-flex
+              w-full
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              bg-emerald-500
+              px-4
+              py-3
+              text-[8px]
+              font-black
+              uppercase
+              tracking-[0.16em]
+              text-black
+              transition
+              hover:bg-white
+            "
+          >
+            Explore Master Guide
+            <ArrowRight className="h-3.5 w-3.5" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 /* ============================================================
    MAIN PORTFOLIO
@@ -664,12 +796,14 @@ export default function Portfolio() {
               }}
             >
               <PortfolioTab
+                value={0}
                 index={0}
                 icon={ShieldCheck}
                 label="Security Labs"
               />
 
               <PortfolioTab
+                value={1}
                 index={1}
                 icon={Award}
                 label="Credentials"
@@ -686,6 +820,8 @@ export default function Portfolio() {
             index={0}
             id="portfolio-tabpanel-0"
           >
+            <FeaturedSecurityResource />
+
             {/* =================================================
                 ERROR STATE
             ================================================= */}
@@ -1015,9 +1151,11 @@ const PortfolioTab = ({
   icon: Icon,
   label,
   index,
+  ...tabProps
 }) => (
   <Tab
     {...getTabProps(index)}
+    {...tabProps}
     icon={
       <Icon
         aria-hidden="true"
