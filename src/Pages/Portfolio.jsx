@@ -523,7 +523,7 @@ export default function Portfolio() {
         overflow-hidden
         bg-[#030014]
         px-[5%]
-        pb-28
+        pb-14
         pt-24
         md:px-[7%]
         lg:px-[8%]
